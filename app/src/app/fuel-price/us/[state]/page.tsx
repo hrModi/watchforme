@@ -23,8 +23,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (!state) return {}
 
   return {
-    title: `${state.name} Gas Price Today — Weekly EIA Data`,
-    description: `This week's gasoline and diesel price in ${state.name}. Set a free alert to get notified when prices change — no account needed.`,
+    title: `${state.name} Gas Price Today | Weekly EIA Data`,
+    description: `This week's gasoline and diesel price in ${state.name}. Set a free alert to get notified when prices change. No account needed.`,
     alternates: {
       canonical: `/fuel-price/us/${state.slug}`,
     },
@@ -54,7 +54,7 @@ export default async function USStateFuelPage({ params }: Props) {
       <Hero
         primaryRate={gasoline}
         secondaryRate={diesel}
-        locationName={`${state.name} — ${state.abbr}`}
+        locationName={`${state.name} (${state.abbr})`}
         country="US"
       />
 
@@ -91,7 +91,7 @@ export default async function USStateFuelPage({ params }: Props) {
 
         <AdSlot slot="C" />
 
-        <section className="max-w-2xl" aria-labelledby="about-heading">
+        <section aria-labelledby="about-heading">
           <h2 id="about-heading" className="text-base font-semibold mb-2" style={{ color: 'var(--text)' }}>
             About {state.name} Gas Prices
           </h2>
@@ -101,8 +101,7 @@ export default async function USStateFuelPage({ params }: Props) {
             its weekly petroleum report.
           </p>
           <p className="text-sm leading-relaxed mt-2" style={{ color: 'var(--text-muted)' }}>
-            Use the alert above to get notified when {state.name} gas prices cross a level you set — free,
-            no account needed, unsubscribe any time.
+            Use the alert above to get notified when {state.name} gas prices cross a level you set.
           </p>
         </section>
       </div>

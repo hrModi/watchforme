@@ -24,7 +24,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   return {
     title: `${city.name} Petrol & Diesel Price Today`,
-    description: `Today's petrol and diesel price in ${city.name}, ${city.state}. Set a free alert to get notified when the price changes — no account needed.`,
+    description: `Today's petrol and diesel price in ${city.name}, ${city.state}. Set a free alert to get notified when the price changes. No account needed.`,
     alternates: {
       canonical: `/fuel-price/india/${city.slug}`,
     },
@@ -91,7 +91,7 @@ export default async function IndiaCityFuelPage({ params }: Props) {
 
         <AdSlot slot="C" />
 
-        <section className="max-w-2xl" aria-labelledby="about-heading">
+        <section aria-labelledby="about-heading">
           <h2 id="about-heading" className="text-base font-semibold mb-2" style={{ color: 'var(--text)' }}>
             About {city.name} Fuel Prices
           </h2>
@@ -101,8 +101,7 @@ export default async function IndiaCityFuelPage({ params }: Props) {
             average due to these state-level levies.
           </p>
           <p className="text-sm leading-relaxed mt-2" style={{ color: 'var(--text-muted)' }}>
-            Use the alert form above to get notified by email or WhatsApp the next time {city.name} fuel
-            prices change — completely free, no account required.
+            Use the alert form above to get notified by email or WhatsApp the next time {city.name} fuel prices change.
           </p>
         </section>
       </div>

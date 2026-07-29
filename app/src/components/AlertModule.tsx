@@ -128,8 +128,8 @@ export default function AlertModule({
       aria-label="Set a price alert"
       noValidate
     >
-      <p className="text-xs font-semibold tracking-wider uppercase mb-3" style={{ color: 'var(--text-faint)' }}>
-        Set Alert — Free, no account needed
+      <p className="text-xs font-semibold tracking-wider uppercase mb-3" style={{ color: 'var(--text-muted)' }}>
+        Set a price alert
       </p>
 
       <div className="flex flex-wrap gap-2 items-start">
@@ -233,7 +233,7 @@ export default function AlertModule({
       )}
 
       <p className="text-xs mt-3" style={{ color: 'var(--text-faint)' }}>
-        Free forever · No account · Unsubscribe any time
+        No account needed · Unsubscribe any time
       </p>
     </form>
   )

@@ -41,16 +41,16 @@ export default function RatesTable({
       <table className="w-full text-sm" aria-label="Fuel prices by region">
         <thead>
           <tr style={{ backgroundColor: 'var(--surface-2)', borderBottom: '1px solid var(--border)' }}>
-            <th className="text-left px-4 py-3 text-xs font-semibold tracking-wider uppercase" style={{ color: 'var(--text-faint)' }}>
+            <th className="text-left px-4 py-3 text-xs font-semibold tracking-wider uppercase" style={{ color: 'var(--text-muted)' }}>
               {regionLabel}
             </th>
-            <th className="text-right px-4 py-3 text-xs font-semibold tracking-wider uppercase tabular" style={{ color: 'var(--text-faint)' }}>
+            <th className="text-right px-4 py-3 text-xs font-semibold tracking-wider uppercase tabular" style={{ color: 'var(--text-muted)' }}>
               {primarySubtype.charAt(0).toUpperCase() + primarySubtype.slice(1)}
             </th>
-            <th className="text-right px-4 py-3 text-xs font-semibold tracking-wider uppercase tabular" style={{ color: 'var(--text-faint)' }}>
+            <th className="text-right px-4 py-3 text-xs font-semibold tracking-wider uppercase tabular" style={{ color: 'var(--text-muted)' }}>
               Diesel
             </th>
-            <th className="text-right px-4 py-3 text-xs font-semibold tracking-wider uppercase hidden sm:table-cell" style={{ color: 'var(--text-faint)' }}>
+            <th className="text-right px-4 py-3 text-xs font-semibold tracking-wider uppercase hidden sm:table-cell" style={{ color: 'var(--text-muted)' }}>
               Updated
             </th>
           </tr>
@@ -79,13 +79,13 @@ export default function RatesTable({
                   </Link>
                 </td>
                 <td className="px-4 py-3 text-right tabular" style={{ color: 'var(--text)' }}>
-                  {primary ? formatValue(primary.value, primary.unit) : '—'}
+                  {primary ? formatValue(primary.value, primary.unit) : '-'}
                 </td>
                 <td className="px-4 py-3 text-right tabular" style={{ color: 'var(--text)' }}>
-                  {secondary ? formatValue(secondary.value, secondary.unit) : '—'}
+                  {secondary ? formatValue(secondary.value, secondary.unit) : '-'}
                 </td>
-                <td className="px-4 py-3 text-right hidden sm:table-cell" style={{ color: 'var(--text-faint)' }}>
-                  {updatedAt ? formatDate(updatedAt) : '—'}
+                <td className="px-4 py-3 text-right hidden sm:table-cell" style={{ color: 'var(--text-muted)' }}>
+                  {updatedAt ? formatDate(updatedAt) : '-'}
                 </td>
               </tr>
             )

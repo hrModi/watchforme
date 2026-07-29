@@ -6,8 +6,8 @@ import { getLatestRate } from '@/lib/rates'
 export const revalidate = 3600
 
 export const metadata: Metadata = {
-  title: 'watchforme.me — Free Price & Rate Watchers',
-  description: 'Free fuel price alerts, gold rate watchers, currency rate trackers and more — no signup, no account needed.',
+  title: 'watchforme.me | Free Price & Rate Watchers',
+  description: 'Free fuel price alerts, gold rate watchers, currency rate trackers and more. No signup, no account needed.',
 }
 
 export default async function HomePage() {
@@ -25,7 +25,7 @@ export default async function HomePage() {
           Price watchers. Free forever.
         </h1>
         <p className="text-base max-w-xl" style={{ color: 'var(--text-muted)' }}>
-          Get notified when fuel prices, gold rates, or currency rates move — by email or WhatsApp.
+          Get notified when fuel prices, gold rates, or currency rates move. By email or WhatsApp.
           No account, no password. Just set a threshold and we&apos;ll ping you.
         </p>
       </section>

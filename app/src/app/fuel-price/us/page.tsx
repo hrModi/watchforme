@@ -9,7 +9,7 @@ import { US_STATES } from '@/config/us-states'
 export const revalidate = 3600
 
 export const metadata: Metadata = {
-  title: 'US Gas Prices by State Today — Weekly EIA Data',
+  title: 'US Gas Prices by State Today | Weekly EIA Data',
   description: 'This week\'s gasoline and diesel prices across all 50 US states, sourced from the EIA. Set a free alert to get notified when gas prices change in your state.',
 }
 
@@ -32,7 +32,7 @@ export default async function USFuelPage() {
       <Hero
         primaryRate={gasoline}
         secondaryRate={diesel}
-        locationName="United States — National Average"
+        locationName="United States · National Average"
         country="US"
       />
 
@@ -68,7 +68,7 @@ export default async function USFuelPage() {
 
         <AdSlot slot="C" />
 
-        <section className="max-w-2xl" aria-labelledby="about-heading">
+        <section aria-labelledby="about-heading">
           <h2 id="about-heading" className="text-base font-semibold mb-2" style={{ color: 'var(--text)' }}>
             About US Gas Prices
           </h2>

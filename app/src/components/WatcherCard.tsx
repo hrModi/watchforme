@@ -54,19 +54,19 @@ export default function WatcherCard({ watcher, liveRate, country = 'india' }: Wa
           className="mt-auto pt-3 border-t"
           style={{ borderColor: 'var(--border)' }}
         >
-          <p className="text-xs" style={{ color: 'var(--text-faint)' }}>
+          <p className="text-xs" style={{ color: 'var(--text-muted)' }}>
             {country === 'india' ? 'India avg. petrol' : 'US avg. gasoline'}
           </p>
           <p className="text-xl font-bold tabular mt-0.5" style={{ color: 'var(--text)' }}>
             {liveRate.unit.startsWith('₹') ? '₹' : '$'}{liveRate.value.toFixed(2)}
-            <span className="text-sm font-normal ml-1" style={{ color: 'var(--text-faint)' }}>{liveRate.unit}</span>
+            <span className="text-sm font-normal ml-1" style={{ color: 'var(--text-muted)' }}>{liveRate.unit}</span>
           </p>
         </div>
       )}
 
       {isLive && !liveRate && (
         <div className="mt-auto pt-3 border-t" style={{ borderColor: 'var(--border)' }}>
-          <p className="text-xs" style={{ color: 'var(--text-faint)' }}>View all prices →</p>
+          <p className="text-xs" style={{ color: 'var(--text-muted)' }}>View all prices →</p>
         </div>
       )}
     </div>

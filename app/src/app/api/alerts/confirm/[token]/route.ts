@@ -8,7 +8,7 @@ const HTML = (title: string, body: string) => `<!DOCTYPE html>
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>${title} — watchforme.me</title>
+  <title>${title} | watchforme.me</title>
   <style>
     body { font-family: system-ui, sans-serif; max-width: 480px; margin: 80px auto; padding: 0 20px; color: #111826; }
     h1 { font-size: 1.25rem; font-weight: 700; margin-bottom: 8px; }

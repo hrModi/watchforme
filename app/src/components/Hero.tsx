@@ -50,7 +50,7 @@ export default function Hero({ primaryRate, secondaryRate, locationName, country
       style={{ borderBottom: '1px solid var(--border)', backgroundColor: 'var(--surface)' }}
     >
       <div className="max-w-6xl mx-auto">
-        <p className="text-xs font-semibold tracking-widest uppercase mb-3" style={{ color: 'var(--text-faint)' }}>
+        <p className="text-xs font-semibold tracking-widest uppercase mb-3" style={{ color: 'var(--text-muted)' }}>
           {locationName}
         </p>
 
@@ -61,7 +61,7 @@ export default function Hero({ primaryRate, secondaryRate, locationName, country
               <span className="text-5xl font-bold tabular tracking-tight" style={{ color: 'var(--text)' }}>
                 {formatValue(primaryRate.value, primaryRate.unit)}
               </span>
-              <span className="text-base" style={{ color: 'var(--text-faint)' }}>{primaryRate.unit}</span>
+              <span className="text-base" style={{ color: 'var(--text-muted)' }}>{primaryRate.unit}</span>
             </div>
             <div className="flex items-center gap-2 mt-1">
               <span className="text-sm font-medium" style={{ color: 'var(--text-muted)' }}>{primaryLabel}</span>
@@ -76,7 +76,7 @@ export default function Hero({ primaryRate, secondaryRate, locationName, country
                 <span className="text-3xl font-semibold tabular" style={{ color: 'var(--text)' }}>
                   {formatValue(secondaryRate.value, secondaryRate.unit)}
                 </span>
-                <span className="text-sm" style={{ color: 'var(--text-faint)' }}>{secondaryRate.unit}</span>
+                <span className="text-sm" style={{ color: 'var(--text-muted)' }}>{secondaryRate.unit}</span>
               </div>
               <div className="flex items-center gap-2 mt-1">
                 <span className="text-sm font-medium" style={{ color: 'var(--text-muted)' }}>{secondaryLabel}</span>
@@ -86,7 +86,7 @@ export default function Hero({ primaryRate, secondaryRate, locationName, country
           )}
         </div>
 
-        <p className="text-xs mt-3" style={{ color: 'var(--text-faint)' }}>
+        <p className="text-xs mt-3" style={{ color: 'var(--text-muted)' }}>
           Last updated: {formatTimestamp(primaryRate.fetched_at)}
         </p>
       </div>
