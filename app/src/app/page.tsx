@@ -6,7 +6,7 @@ import { getLatestRate } from '@/lib/rates'
 export const revalidate = 3600
 
 export const metadata: Metadata = {
-  title: 'WatcherFor.me — Free Price & Rate Watchers',
+  title: 'watchforme.me — Free Price & Rate Watchers',
   description: 'Free fuel price alerts, gold rate watchers, currency rate trackers and more — no signup, no account needed.',
 }
 
@@ -46,10 +46,9 @@ export default async function HomePage() {
 
       {/* Trust blurb */}
       <section className="mt-16 pt-8 border-t" style={{ borderColor: 'var(--border)' }}>
-        <p className="text-sm max-w-lg" style={{ color: 'var(--text-muted)' }}>
-          <strong style={{ color: 'var(--text)' }}>Free forever.</strong> WatcherFor.me is funded by
-          ads, not subscriptions. No personal data sold. Alerts use only the contact info you provide,
-          and you can unsubscribe instantly from any notification.
+        <p className="text-sm" style={{ color: 'var(--text-muted)' }}>
+          <strong style={{ color: 'var(--text)' }}>Free forever.</strong> No personal data sold.
+          Alerts use only the contact info you provide, and you can unsubscribe instantly from any notification.
         </p>
       </section>
     </div>

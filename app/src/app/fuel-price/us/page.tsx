@@ -78,7 +78,7 @@ export default async function USFuelPage() {
             distance from supply terminals.
           </p>
           <p className="text-sm leading-relaxed mt-2" style={{ color: 'var(--text-muted)' }}>
-            WatcherFor.me updates state-level prices every Monday evening after the EIA release. Set an alert
+            watchforme.me updates state-level prices every Monday evening after the EIA release. Set an alert
             above to get notified when the national average or your state's price crosses a threshold you care about.
           </p>
         </section>

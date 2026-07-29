@@ -79,7 +79,7 @@ export default async function IndiaFuelPage() {
             due to local taxes, dealer commissions, and VAT rates set by individual state governments.
           </p>
           <p className="mt-2" style={{ color: 'var(--text-muted)' }}>
-            WatcherFor.me pulls the latest published rates every morning after the daily revision and updates
+            watchforme.me pulls the latest published rates every morning after the daily revision and updates
             all city pages automatically. Set an alert above to get notified the next time prices move in
             your city — no account required.
           </p>

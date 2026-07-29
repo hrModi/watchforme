@@ -8,7 +8,7 @@ const HTML = (title: string, body: string) => `<!DOCTYPE html>
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>${title} — WatcherFor.me</title>
+  <title>${title} — watchforme.me</title>
   <style>
     body { font-family: system-ui, sans-serif; max-width: 480px; margin: 80px auto; padding: 0 20px; color: #111826; }
     h1 { font-size: 1.25rem; font-weight: 700; margin-bottom: 8px; }
@@ -30,7 +30,7 @@ export async function GET(_request: NextRequest, { params }: Props) {
   const html = HTML('Unsubscribed', `
     <h1>You're unsubscribed</h1>
     <p>Your alert has been cancelled. You won't receive any more notifications for this condition.</p>
-    <p style="margin-top: 16px;"><a href="/">← Back to WatcherFor.me</a></p>
+    <p style="margin-top: 16px;"><a href="/">← Back to watchforme.me</a></p>
   `)
 
   return new Response(html, {

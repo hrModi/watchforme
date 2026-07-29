@@ -1,6 +1,6 @@
 @import "tailwindcss";
 
-/* ── Design tokens ────────────────────────────────────────── */
+/* ── Design tokens — light only ───────────────────────────── */
 :root {
   --bg:            #F4F5F7;
   --surface:       #FFFFFF;
@@ -17,53 +17,6 @@
   --shadow-sm:     0 1px 3px rgba(0,0,0,.07), 0 1px 2px rgba(0,0,0,.05);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --bg:            #0B0E14;
-    --surface:       #111622;
-    --surface-2:     #161C28;
-    --accent:        #4F8BFF;
-    --accent-subtle: #0D1E3F;
-    --accent-dim:    #7AABFF;
-    --text:          #E4E9F4;
-    --text-muted:    #7E8BA3;
-    --text-faint:    #515C73;
-    --border:        #1E2635;
-    --border-strong: #2C374D;
-    --shadow-sm:     0 1px 3px rgba(0,0,0,.3);
-  }
-}
-
-[data-theme="dark"] {
-  --bg:            #0B0E14;
-  --surface:       #111622;
-  --surface-2:     #161C28;
-  --accent:        #4F8BFF;
-  --accent-subtle: #0D1E3F;
-  --accent-dim:    #7AABFF;
-  --text:          #E4E9F4;
-  --text-muted:    #7E8BA3;
-  --text-faint:    #515C73;
-  --border:        #1E2635;
-  --border-strong: #2C374D;
-  --shadow-sm:     0 1px 3px rgba(0,0,0,.3);
-}
-
-[data-theme="light"] {
-  --bg:            #F4F5F7;
-  --surface:       #FFFFFF;
-  --surface-2:     #F0F2F6;
-  --accent:        #1B59D8;
-  --accent-subtle: #E8EFFE;
-  --accent-dim:    #6B96F0;
-  --text:          #111826;
-  --text-muted:    #5C6478;
-  --text-faint:    #8F97A8;
-  --border:        #DEE2EC;
-  --border-strong: #C3CAD8;
-  --shadow-sm:     0 1px 3px rgba(0,0,0,.07), 0 1px 2px rgba(0,0,0,.05);
-}
-
 /* ── Base ─────────────────────────────────────────────────── */
 body {
   background-color: var(--bg);
@@ -71,21 +24,20 @@ body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
 }
 
-/* ── Utility classes (supplement Tailwind) ────────────────── */
-.bg-page    { background-color: var(--bg); }
-.bg-surface { background-color: var(--surface); }
+/* ── Semantic helpers (supplement Tailwind utilities) ─────── */
+.bg-page      { background-color: var(--bg); }
+.bg-surface   { background-color: var(--surface); }
 .bg-surface-2 { background-color: var(--surface-2); }
 .bg-accent-subtle { background-color: var(--accent-subtle); }
 
-.text-primary  { color: var(--text); }
+.text-primary   { color: var(--text); }
 .text-secondary { color: var(--text-muted); }
-.text-faint    { color: var(--text-faint); }
-.text-accent   { color: var(--accent); }
+.text-faint     { color: var(--text-faint); }
+.text-accent    { color: var(--accent); }
 
 .border-default { border-color: var(--border); }
 .border-strong  { border-color: var(--border-strong); }
-
-.shadow-card { box-shadow: var(--shadow-sm); }
+.shadow-card    { box-shadow: var(--shadow-sm); }
 
 /* ── Tabular numerals for price columns ───────────────────── */
 .tabular { font-variant-numeric: tabular-nums; }
@@ -94,16 +46,6 @@ body {
 .trend-up   { color: #15803D; }
 .trend-down { color: #B91C1C; }
 .trend-flat { color: var(--text-faint); }
-
-@media (prefers-color-scheme: dark) {
-  .trend-up   { color: #4ADE80; }
-  .trend-down { color: #F87171; }
-}
-
-[data-theme="dark"] .trend-up   { color: #4ADE80; }
-[data-theme="dark"] .trend-down { color: #F87171; }
-[data-theme="light"] .trend-up  { color: #15803D; }
-[data-theme="light"] .trend-down { color: #B91C1C; }
 
 /* ── Focus visible ────────────────────────────────────────── */
 :focus-visible {

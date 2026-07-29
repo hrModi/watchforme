@@ -4,15 +4,15 @@ import Header from '@/components/Header'
 
 export const metadata: Metadata = {
   title: {
-    default: 'WatcherFor.me — Free Price & Rate Watchers',
-    template: '%s | WatcherFor.me',
+    default: 'watchforme.me — Free Price & Rate Watchers',
+    template: '%s | watchforme.me',
   },
   description: 'Free fuel price alerts for India and the US. No signup, no account — just enter your email or WhatsApp and get notified when prices move.',
   keywords: ['fuel price', 'petrol price', 'diesel price', 'gas price', 'price alert', 'India fuel price', 'US gas price'],
-  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL ?? 'https://watcherforme.example.com'),
+  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL ?? 'https://watchforme.me'),
   openGraph: {
     type: 'website',
-    siteName: 'WatcherFor.me',
+    siteName: 'watchforme.me',
   },
   robots: {
     index: true,
@@ -31,10 +31,13 @@ export default function RootLayout({
           {children}
         </main>
         <footer
-          className="border-t mt-16 py-8 text-center text-xs"
+          className="border-t py-6 text-xs"
           style={{ borderColor: 'var(--border)', color: 'var(--text-faint)' }}
         >
-          <p>WatcherFor.me — Free forever · No signup · <a href="/privacy" style={{ color: 'var(--text-muted)' }}>Privacy</a></p>
+          <div className="max-w-6xl mx-auto px-4 sm:px-6 flex items-center justify-between gap-4">
+            <span>watchforme.me — Free forever · No signup</span>
+            <a href="/privacy" style={{ color: 'var(--text-muted)' }}>Privacy</a>
+          </div>
         </footer>
       </body>
     </html>

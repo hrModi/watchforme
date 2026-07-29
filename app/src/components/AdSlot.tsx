@@ -1,40 +1,37 @@
 'use client'
 
-// Placeholder ad slot component.
-// Replace the inner content with your Google AdSense code once approved.
-// AdSense policy requires "Advertisement" label and visual separation from content.
+// Google Ad Manager slot. GAM collapses the div automatically when no ad fills.
+// Replace the data-ad-slot value with your actual GAM slot ID per slot.
+// Include the GPT script in layout.tsx once GAM account is set up.
 
 interface AdSlotProps {
   slot: 'A' | 'B' | 'C'
   className?: string
 }
 
-export default function AdSlot({ slot: _slot, className = '' }: AdSlotProps) {
-  // Production: replace this div with <ins class="adsbygoogle" ... /> block
-  // and load adsbygoogle.js in layout.tsx once AdSense is approved.
-  if (process.env.NODE_ENV === 'production' && !process.env.NEXT_PUBLIC_ADSENSE_CLIENT) {
-    return null
-  }
+// GAM ad unit paths — update with your network ID and ad unit names
+const AD_UNITS: Record<string, string> = {
+  A: '/your-network-id/watchforme-leaderboard',
+  B: '/your-network-id/watchforme-incontent',
+  C: '/your-network-id/watchforme-footer',
+}
 
+const DIV_IDS: Record<string, string> = {
+  A: 'div-gpt-ad-slot-a',
+  B: 'div-gpt-ad-slot-b',
+  C: 'div-gpt-ad-slot-c',
+}
+
+export default function AdSlot({ slot, className = '' }: AdSlotProps) {
+  // The div renders but takes zero space until GAM fills it.
+  // GAM's collapseEmptyDivs() handles collapsing when no ad is served.
   return (
-    <div className={`my-4 ${className}`}>
-      <p
-        className="text-center text-xs mb-1 tracking-wider uppercase"
-        style={{ color: 'var(--text-faint)' }}
-      >
-        Advertisement
-      </p>
+    <div className={className} aria-hidden="true">
       <div
-        className="w-full flex items-center justify-center rounded border text-xs"
-        style={{
-          minHeight: 90,
-          backgroundColor: 'var(--surface-2)',
-          borderColor: 'var(--border)',
-          color: 'var(--text-faint)',
-        }}
-      >
-        Ad slot (AdSense unit goes here)
-      </div>
+        id={DIV_IDS[slot]}
+        data-ad-unit={AD_UNITS[slot]}
+        style={{ minWidth: 0, minHeight: 0 }}
+      />
     </div>
   )
 }

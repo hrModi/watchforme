@@ -14,7 +14,7 @@ export default function Header() {
           style={{ color: 'var(--text)' }}
         >
           <span className="text-base">⛽</span>
-          <span>WatcherFor.me</span>
+          <span>watchforme.me</span>
         </Link>
 
         <CountrySwitcher />

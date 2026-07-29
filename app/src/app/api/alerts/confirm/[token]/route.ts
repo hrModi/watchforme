@@ -8,7 +8,7 @@ const HTML = (title: string, body: string) => `<!DOCTYPE html>
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>${title} — WatcherFor.me</title>
+  <title>${title} — watchforme.me</title>
   <style>
     body { font-family: system-ui, sans-serif; max-width: 480px; margin: 80px auto; padding: 0 20px; color: #111826; }
     h1 { font-size: 1.25rem; font-weight: 700; margin-bottom: 8px; }
@@ -32,7 +32,7 @@ export async function GET(_request: NextRequest, { params }: Props) {
     const html = HTML('Already confirmed', `
       <h1>Already confirmed</h1>
       <p>This alert is already active. You'll be notified when the price condition is met.</p>
-      <p><a href="/">← Back to WatcherFor.me</a></p>
+      <p><a href="/">← Back to watchforme.me</a></p>
     `)
     return new Response(html, {
       headers: { 'Content-Type': 'text/html; charset=utf-8' },
@@ -42,7 +42,7 @@ export async function GET(_request: NextRequest, { params }: Props) {
   const html = HTML('Alert confirmed', `
     <h1>Alert confirmed ✓</h1>
     <p>Your alert is now active. We'll notify you via ${alert.channel} when the condition is met.</p>
-    <p style="margin-top: 16px;"><a href="/">← Back to WatcherFor.me</a></p>
+    <p style="margin-top: 16px;"><a href="/">← Back to watchforme.me</a></p>
   `)
 
   return new Response(html, {
