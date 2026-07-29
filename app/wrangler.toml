@@ -1,0 +1,10 @@
+name = "watchforme"
+compatibility_date = "2024-09-23"
+compatibility_flags = ["nodejs_compat"]
+
+# Cloudflare Pages deployment
+# Build command: pnpm run build:cf
+# Output directory: .vercel/output/static
+
+[vars]
+NEXT_PUBLIC_APP_URL = "https://yourdomain.com"
