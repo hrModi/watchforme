@@ -195,19 +195,20 @@ export default function AlertModule({
               >
                 Email
               </button>
-              <button
-                type="button"
-                disabled
-                title="WhatsApp alerts coming soon"
-                className="px-3 py-2 cursor-not-allowed select-none"
-                style={{
-                  backgroundColor: 'var(--surface-2)',
-                  color: 'var(--text-faint)',
-                  opacity: 0.5,
-                }}
-              >
-                WhatsApp
-              </button>
+              <span title="WhatsApp alerts coming soon" style={{ cursor: 'not-allowed' }}>
+                <button
+                  type="button"
+                  disabled
+                  className="px-3 py-2 select-none pointer-events-none"
+                  style={{
+                    backgroundColor: 'var(--surface-2)',
+                    color: 'var(--text-faint)',
+                    opacity: 0.5,
+                  }}
+                >
+                  WhatsApp
+                </button>
+              </span>
             </div>
           </div>
 
