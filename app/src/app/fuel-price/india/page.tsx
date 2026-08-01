@@ -10,6 +10,7 @@ export const revalidate = 3600
 export const metadata: Metadata = {
   title: 'India Fuel Prices Today | Petrol & Diesel Rates by City',
   description: 'Today\'s petrol and diesel prices across all major Indian cities. Find your city and set a free alert to get notified when prices change.',
+  alternates: { canonical: '/fuel-price/india' },
 }
 
 const POPULAR = [

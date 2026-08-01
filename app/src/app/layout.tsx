@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { Space_Grotesk } from 'next/font/google'
 import './globals.css'
 import Header from '@/components/Header'
+import GoogleAnalytics from '@/components/GoogleAnalytics'
 
 const spaceGrotesk = Space_Grotesk({
   subsets: ['latin'],
@@ -18,6 +19,7 @@ export const metadata: Metadata = {
   description: 'Free fuel price alerts for India and the US. No signup, no account. Just enter your email or WhatsApp and get notified when prices move.',
   keywords: ['fuel price', 'petrol price', 'diesel price', 'gas price', 'price alert', 'India fuel price', 'US gas price'],
   metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL ?? 'https://watchforme.me'),
+  alternates: { canonical: '/' },
   openGraph: {
     type: 'website',
     siteName: 'watchforme.me',
@@ -31,9 +33,12 @@ export const metadata: Metadata = {
 export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
+  const year = new Date().getFullYear()
+
   return (
     <html lang="en" className={`h-full ${spaceGrotesk.variable}`}>
       <body className="bg-page min-h-full flex flex-col antialiased">
+        <GoogleAnalytics />
         <Header />
         <main id="main-content" className="flex-1">
           {children}
@@ -42,10 +47,16 @@ export default function RootLayout({
           className="border-t py-6 text-xs"
           style={{ borderColor: 'var(--border)', color: 'var(--text-faint)' }}
         >
-          <div className="max-w-6xl mx-auto px-4 sm:px-6 flex items-center justify-between gap-4">
-            <span style={{ fontWeight: 600, letterSpacing: '-0.02em' }}>watchforme<span style={{ color: 'var(--accent)', fontWeight: 500 }}>.me</span></span>
-            <span style={{ margin: '0 8px', opacity: 0.4 }}>·</span>
-            <span>Free forever · No signup</span>
+          <div className="max-w-6xl mx-auto px-4 sm:px-6 flex flex-wrap items-center gap-x-3 gap-y-1 justify-between">
+            <span>
+              <span style={{ fontWeight: 600, letterSpacing: '-0.02em', color: 'var(--text-muted)' }}>
+                watchforme<span style={{ color: 'var(--accent)', fontWeight: 500 }}>.me</span>
+              </span>
+              <span style={{ margin: '0 6px', opacity: 0.35 }}>·</span>
+              <span>&copy; {year} watchforme.me</span>
+              <span style={{ margin: '0 6px', opacity: 0.35 }}>·</span>
+              <span>Free forever · No signup required</span>
+            </span>
             <a href="/privacy" style={{ color: 'var(--text-muted)' }}>Privacy</a>
           </div>
         </footer>

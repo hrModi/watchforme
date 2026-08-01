@@ -10,6 +10,7 @@ export const revalidate = 3600
 export const metadata: Metadata = {
   title: 'US Gas Prices by State Today | Gasoline & Diesel',
   description: 'Today\'s gasoline and diesel prices across all 50 US states, updated daily from AAA. Find your state and set a free alert.',
+  alternates: { canonical: '/fuel-price/us' },
 }
 
 const POPULAR = [
