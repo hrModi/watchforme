@@ -67,6 +67,9 @@ export async function sendTriggerEmail(alert: Alert, currentValue: number, unit:
 
 // ─── HTML templates ───────────────────────────────────────────────────────────
 
+const LOGO_SVG = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><path d="M18,35 L18,18 L35,18 M65,18 L82,18 L82,35 M18,65 L18,82 L35,82 M82,65 L82,82 L65,82" stroke="#ffffff" stroke-width="9" stroke-linecap="round" stroke-linejoin="round" fill="none"/><circle cx="50" cy="50" r="10" fill="rgba(255,255,255,0.7)"/></svg>`
+const LOGO_DATA_URI = `data:image/svg+xml;base64,${Buffer.from(LOGO_SVG).toString('base64')}`
+
 function wrapper(content: string) {
   return `<!DOCTYPE html>
 <html lang="en">
@@ -80,14 +83,21 @@ function wrapper(content: string) {
       <table width="100%" cellpadding="0" cellspacing="0" style="max-width:520px;background:#ffffff;border-radius:12px;overflow:hidden;border:1px solid #e2e5ea;">
         <tr>
           <td style="background:#1B59D8;padding:20px 28px;">
-            <span style="color:#ffffff;font-size:15px;font-weight:700;letter-spacing:-0.03em;">watchforme</span><span style="color:rgba(255,255,255,0.7);font-size:15px;font-weight:500;letter-spacing:-0.01em;">.me</span>
+            <table cellpadding="0" cellspacing="0"><tr>
+              <td style="padding-right:10px;vertical-align:middle;">
+                <img src="${LOGO_DATA_URI}" width="28" height="28" alt="" style="display:block;border-radius:6px;">
+              </td>
+              <td style="vertical-align:middle;">
+                <span style="color:#ffffff;font-size:15px;font-weight:700;letter-spacing:-0.03em;">WatchForMe</span><span style="color:rgba(255,255,255,0.65);font-size:15px;font-weight:400;letter-spacing:-0.01em;">.me</span>
+              </td>
+            </tr></table>
           </td>
         </tr>
         <tr><td style="padding:28px;">${content}</td></tr>
         <tr>
           <td style="padding:16px 28px;border-top:1px solid #e2e5ea;background:#f9fafb;">
             <p style="margin:0;font-size:12px;color:#8a909e;line-height:1.6;">
-              You're receiving this because you set a price alert on watchforme.me.
+              You're receiving this because you set a price alert on WatchForMe.me.
               No account needed &mdash; alerts are one-time and free.<br>
               <a href="${APP_URL}" style="color:#1B59D8;text-decoration:none;">watchforme.me</a>
             </p>
