@@ -1,53 +1,29 @@
 // India Fuel Price Fetcher
-// Source: IOCL city-wise daily price pages
+// Source: petrolpriceindia.com (aggregates IOCL/BPCL/HPCL daily prices)
 // Cadence: daily at 06:00 UTC (11:30 IST) — after daily price revision
-//
-// IOCL URL pattern (verify against live site before deploying):
-// https://iocl.com/fuel-price
 
 import { dbAdmin } from '@/lib/db'
 import { INDIA_CITIES } from '@/config/india-cities'
 import type { FetcherResult } from '@/types'
 
-const SOURCE = 'iocl'
+const BASE_URL = 'https://petrolpriceindia.com'
+const SOURCE = 'petrolpriceindia'
+const UA = 'Mozilla/5.0 (compatible; WatcherBot/1.0; +https://watchforme.me)'
 
-interface ParsedCityRate {
-  petrol: number
-  diesel: number
-}
-
-// Parse IOCL HTML for a city's petrol & diesel price
-// The exact selectors MUST be verified against the live IOCL page before first run.
-// Prices are published in ₹/L format (e.g. "94.72").
-function parseIOCLResponse(html: string): ParsedCityRate | null {
-  // TODO: Replace with actual selectors from live IOCL page.
-  // Common pattern: table rows with "Petrol" and "Diesel" labels.
-  const petrolMatch = html.match(/petrol[^₹]*₹\s*([\d.]+)/i)
-  const dieselMatch = html.match(/diesel[^₹]*₹\s*([\d.]+)/i)
-
-  if (!petrolMatch || !dieselMatch) return null
-
-  const petrol = parseFloat(petrolMatch[1])
-  const diesel = parseFloat(dieselMatch[1])
-
-  if (isNaN(petrol) || isNaN(diesel)) return null
-  return { petrol, diesel }
-}
-
-async function fetchCityRate(citySlug: string): Promise<ParsedCityRate | null> {
-  // TODO: Replace with actual IOCL city URL format
-  const url = `https://iocl.com/fuel-price/${citySlug}`
-
+async function fetchPrice(citySourceSlug: string, fuelType: 'petrol' | 'diesel'): Promise<number | null> {
+  const url = `${BASE_URL}/${fuelType}-price-in-${citySourceSlug}.html`
   try {
-    const response = await fetch(url, {
-      headers: { 'User-Agent': 'WatcherBot/1.0 (+https://yourdomain.com)' },
-      signal: AbortSignal.timeout(10_000),
+    const res = await fetch(url, {
+      headers: { 'User-Agent': UA },
+      signal: AbortSignal.timeout(8_000),
     })
-    if (!response.ok) throw new Error(`HTTP ${response.status}`)
-    const html = await response.text()
-    return parseIOCLResponse(html)
-  } catch (err) {
-    console.error(JSON.stringify({ event: 'iocl_fetch_error', city: citySlug, error: String(err) }))
+    if (!res.ok) return null
+    const html = await res.text()
+    const match = html.match(/₹([\d.]+)/)
+    if (!match) return null
+    const value = parseFloat(match[1])
+    return isNaN(value) ? null : value
+  } catch {
     return null
   }
 }
@@ -57,13 +33,26 @@ export async function runIndiaFuelFetcher(): Promise<{ success: number; failed: 
   let failed = 0
 
   for (const city of INDIA_CITIES) {
-    const rates = await fetchCityRate(city.slug)
-    if (!rates) { failed++; continue }
+    const slug = city.sourceSlug ?? city.slug
+    if (slug === 'skip') continue
 
-    rows.push(
-      { country: 'IN', region: city.slug, subtype: 'petrol', value: rates.petrol, unit: '₹/L', source: SOURCE },
-      { country: 'IN', region: city.slug, subtype: 'diesel', value: rates.diesel, unit: '₹/L', source: SOURCE },
-    )
+    const [petrol, diesel] = await Promise.all([
+      fetchPrice(slug, 'petrol'),
+      fetchPrice(slug, 'diesel'),
+    ])
+
+    if (petrol === null && diesel === null) {
+      console.error(JSON.stringify({ event: 'india_fetch_error', city: city.slug }))
+      failed++
+      continue
+    }
+
+    if (petrol !== null) {
+      rows.push({ country: 'IN', region: city.slug, subtype: 'petrol', value: petrol, unit: '₹/L', source: SOURCE })
+    }
+    if (diesel !== null) {
+      rows.push({ country: 'IN', region: city.slug, subtype: 'diesel', value: diesel, unit: '₹/L', source: SOURCE })
+    }
   }
 
   if (rows.length === 0) {
@@ -74,13 +63,24 @@ export async function runIndiaFuelFetcher(): Promise<{ success: number; failed: 
   // Compute national averages from successfully fetched cities
   const petrolValues = rows.filter(r => r.subtype === 'petrol').map(r => r.value)
   const dieselValues = rows.filter(r => r.subtype === 'diesel').map(r => r.value)
-  const avgPetrol = petrolValues.reduce((a, b) => a + b, 0) / petrolValues.length
-  const avgDiesel = dieselValues.reduce((a, b) => a + b, 0) / dieselValues.length
 
-  rows.push(
-    { country: 'IN', region: null, subtype: 'petrol', value: Number(avgPetrol.toFixed(2)), unit: '₹/L', source: 'computed' },
-    { country: 'IN', region: null, subtype: 'diesel', value: Number(avgDiesel.toFixed(2)), unit: '₹/L', source: 'computed' },
-  )
+  if (petrolValues.length > 0) {
+    const avg = petrolValues.reduce((a, b) => a + b, 0) / petrolValues.length
+    rows.push({ country: 'IN', region: null, subtype: 'petrol', value: Number(avg.toFixed(2)), unit: '₹/L', source: 'computed' })
+  }
+  if (dieselValues.length > 0) {
+    const avg = dieselValues.reduce((a, b) => a + b, 0) / dieselValues.length
+    rows.push({ country: 'IN', region: null, subtype: 'diesel', value: Number(avg.toFixed(2)), unit: '₹/L', source: 'computed' })
+  }
+
+  // Delete today's rows before inserting to keep the fetch idempotent
+  const todayStart = new Date()
+  todayStart.setUTCHours(0, 0, 0, 0)
+  await dbAdmin.from('rates')
+    .delete()
+    .eq('watcher_type', 'fuel')
+    .eq('country', 'IN')
+    .gte('fetched_at', todayStart.toISOString())
 
   const insertRows = rows.map(r => ({ watcher_type: 'fuel', ...r }))
   const { error } = await dbAdmin.from('rates').insert(insertRows)
@@ -90,6 +90,7 @@ export async function runIndiaFuelFetcher(): Promise<{ success: number; failed: 
     return { success: 0, failed: rows.length }
   }
 
-  console.log(JSON.stringify({ event: 'india_fetcher_done', cities: petrolValues.length, failed }))
-  return { success: petrolValues.length, failed }
+  const citiesSucceeded = petrolValues.length
+  console.log(JSON.stringify({ event: 'india_fetcher_done', cities: citiesSucceeded, failed }))
+  return { success: citiesSucceeded, failed }
 }

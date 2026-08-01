@@ -1,71 +1,71 @@
-// EIA duoarea codes for US states: "S" + state abbreviation
-// National average uses "NUS"
+// Source: AAA State Gas Price Averages (all 50 states + DC, daily)
+// https://gasprices.aaa.com/state-gas-price-averages/
 export interface USState {
   name: string
   slug: string
-  abbr: string
-  eiaCode: string // EIA duoarea code: S + state_abbr
+  abbr: string  // 2-letter code used in AAA URL (?state=XX)
 }
 
 export const US_STATES: USState[] = [
-  { name: 'Alabama', slug: 'alabama', abbr: 'AL', eiaCode: 'SAL' },
-  { name: 'Alaska', slug: 'alaska', abbr: 'AK', eiaCode: 'SAK' },
-  { name: 'Arizona', slug: 'arizona', abbr: 'AZ', eiaCode: 'SAZ' },
-  { name: 'Arkansas', slug: 'arkansas', abbr: 'AR', eiaCode: 'SAR' },
-  { name: 'California', slug: 'california', abbr: 'CA', eiaCode: 'SCA' },
-  { name: 'Colorado', slug: 'colorado', abbr: 'CO', eiaCode: 'SCO' },
-  { name: 'Connecticut', slug: 'connecticut', abbr: 'CT', eiaCode: 'SCT' },
-  { name: 'Delaware', slug: 'delaware', abbr: 'DE', eiaCode: 'SDE' },
-  { name: 'Florida', slug: 'florida', abbr: 'FL', eiaCode: 'SFL' },
-  { name: 'Georgia', slug: 'georgia', abbr: 'GA', eiaCode: 'SGA' },
-  { name: 'Hawaii', slug: 'hawaii', abbr: 'HI', eiaCode: 'SHI' },
-  { name: 'Idaho', slug: 'idaho', abbr: 'ID', eiaCode: 'SID' },
-  { name: 'Illinois', slug: 'illinois', abbr: 'IL', eiaCode: 'SIL' },
-  { name: 'Indiana', slug: 'indiana', abbr: 'IN', eiaCode: 'SIN' },
-  { name: 'Iowa', slug: 'iowa', abbr: 'IA', eiaCode: 'SIA' },
-  { name: 'Kansas', slug: 'kansas', abbr: 'KS', eiaCode: 'SKS' },
-  { name: 'Kentucky', slug: 'kentucky', abbr: 'KY', eiaCode: 'SKY' },
-  { name: 'Louisiana', slug: 'louisiana', abbr: 'LA', eiaCode: 'SLA' },
-  { name: 'Maine', slug: 'maine', abbr: 'ME', eiaCode: 'SME' },
-  { name: 'Maryland', slug: 'maryland', abbr: 'MD', eiaCode: 'SMD' },
-  { name: 'Massachusetts', slug: 'massachusetts', abbr: 'MA', eiaCode: 'SMA' },
-  { name: 'Michigan', slug: 'michigan', abbr: 'MI', eiaCode: 'SMI' },
-  { name: 'Minnesota', slug: 'minnesota', abbr: 'MN', eiaCode: 'SMN' },
-  { name: 'Mississippi', slug: 'mississippi', abbr: 'MS', eiaCode: 'SMS' },
-  { name: 'Missouri', slug: 'missouri', abbr: 'MO', eiaCode: 'SMO' },
-  { name: 'Montana', slug: 'montana', abbr: 'MT', eiaCode: 'SMT' },
-  { name: 'Nebraska', slug: 'nebraska', abbr: 'NE', eiaCode: 'SNE' },
-  { name: 'Nevada', slug: 'nevada', abbr: 'NV', eiaCode: 'SNV' },
-  { name: 'New Hampshire', slug: 'new-hampshire', abbr: 'NH', eiaCode: 'SNH' },
-  { name: 'New Jersey', slug: 'new-jersey', abbr: 'NJ', eiaCode: 'SNJ' },
-  { name: 'New Mexico', slug: 'new-mexico', abbr: 'NM', eiaCode: 'SNM' },
-  { name: 'New York', slug: 'new-york', abbr: 'NY', eiaCode: 'SNY' },
-  { name: 'North Carolina', slug: 'north-carolina', abbr: 'NC', eiaCode: 'SNC' },
-  { name: 'North Dakota', slug: 'north-dakota', abbr: 'ND', eiaCode: 'SND' },
-  { name: 'Ohio', slug: 'ohio', abbr: 'OH', eiaCode: 'SOH' },
-  { name: 'Oklahoma', slug: 'oklahoma', abbr: 'OK', eiaCode: 'SOK' },
-  { name: 'Oregon', slug: 'oregon', abbr: 'OR', eiaCode: 'SOR' },
-  { name: 'Pennsylvania', slug: 'pennsylvania', abbr: 'PA', eiaCode: 'SPA' },
-  { name: 'Rhode Island', slug: 'rhode-island', abbr: 'RI', eiaCode: 'SRI' },
-  { name: 'South Carolina', slug: 'south-carolina', abbr: 'SC', eiaCode: 'SSC' },
-  { name: 'South Dakota', slug: 'south-dakota', abbr: 'SD', eiaCode: 'SSD' },
-  { name: 'Tennessee', slug: 'tennessee', abbr: 'TN', eiaCode: 'STN' },
-  { name: 'Texas', slug: 'texas', abbr: 'TX', eiaCode: 'STX' },
-  { name: 'Utah', slug: 'utah', abbr: 'UT', eiaCode: 'SUT' },
-  { name: 'Vermont', slug: 'vermont', abbr: 'VT', eiaCode: 'SVT' },
-  { name: 'Virginia', slug: 'virginia', abbr: 'VA', eiaCode: 'SVA' },
-  { name: 'Washington', slug: 'washington', abbr: 'WA', eiaCode: 'SWA' },
-  { name: 'West Virginia', slug: 'west-virginia', abbr: 'WV', eiaCode: 'SWV' },
-  { name: 'Wisconsin', slug: 'wisconsin', abbr: 'WI', eiaCode: 'SWI' },
-  { name: 'Wyoming', slug: 'wyoming', abbr: 'WY', eiaCode: 'SWY' },
+  { name: 'Alabama',              slug: 'alabama',              abbr: 'AL' },
+  { name: 'Alaska',               slug: 'alaska',               abbr: 'AK' },
+  { name: 'Arizona',              slug: 'arizona',              abbr: 'AZ' },
+  { name: 'Arkansas',             slug: 'arkansas',             abbr: 'AR' },
+  { name: 'California',           slug: 'california',           abbr: 'CA' },
+  { name: 'Colorado',             slug: 'colorado',             abbr: 'CO' },
+  { name: 'Connecticut',          slug: 'connecticut',          abbr: 'CT' },
+  { name: 'Delaware',             slug: 'delaware',             abbr: 'DE' },
+  { name: 'District of Columbia', slug: 'district-of-columbia', abbr: 'DC' },
+  { name: 'Florida',              slug: 'florida',              abbr: 'FL' },
+  { name: 'Georgia',              slug: 'georgia',              abbr: 'GA' },
+  { name: 'Hawaii',               slug: 'hawaii',               abbr: 'HI' },
+  { name: 'Idaho',                slug: 'idaho',                abbr: 'ID' },
+  { name: 'Illinois',             slug: 'illinois',             abbr: 'IL' },
+  { name: 'Indiana',              slug: 'indiana',              abbr: 'IN' },
+  { name: 'Iowa',                 slug: 'iowa',                 abbr: 'IA' },
+  { name: 'Kansas',               slug: 'kansas',               abbr: 'KS' },
+  { name: 'Kentucky',             slug: 'kentucky',             abbr: 'KY' },
+  { name: 'Louisiana',            slug: 'louisiana',            abbr: 'LA' },
+  { name: 'Maine',                slug: 'maine',                abbr: 'ME' },
+  { name: 'Maryland',             slug: 'maryland',             abbr: 'MD' },
+  { name: 'Massachusetts',        slug: 'massachusetts',        abbr: 'MA' },
+  { name: 'Michigan',             slug: 'michigan',             abbr: 'MI' },
+  { name: 'Minnesota',            slug: 'minnesota',            abbr: 'MN' },
+  { name: 'Mississippi',          slug: 'mississippi',          abbr: 'MS' },
+  { name: 'Missouri',             slug: 'missouri',             abbr: 'MO' },
+  { name: 'Montana',              slug: 'montana',              abbr: 'MT' },
+  { name: 'Nebraska',             slug: 'nebraska',             abbr: 'NE' },
+  { name: 'Nevada',               slug: 'nevada',               abbr: 'NV' },
+  { name: 'New Hampshire',        slug: 'new-hampshire',        abbr: 'NH' },
+  { name: 'New Jersey',           slug: 'new-jersey',           abbr: 'NJ' },
+  { name: 'New Mexico',           slug: 'new-mexico',           abbr: 'NM' },
+  { name: 'New York',             slug: 'new-york',             abbr: 'NY' },
+  { name: 'North Carolina',       slug: 'north-carolina',       abbr: 'NC' },
+  { name: 'North Dakota',         slug: 'north-dakota',         abbr: 'ND' },
+  { name: 'Ohio',                 slug: 'ohio',                 abbr: 'OH' },
+  { name: 'Oklahoma',             slug: 'oklahoma',             abbr: 'OK' },
+  { name: 'Oregon',               slug: 'oregon',               abbr: 'OR' },
+  { name: 'Pennsylvania',         slug: 'pennsylvania',         abbr: 'PA' },
+  { name: 'Rhode Island',         slug: 'rhode-island',         abbr: 'RI' },
+  { name: 'South Carolina',       slug: 'south-carolina',       abbr: 'SC' },
+  { name: 'South Dakota',         slug: 'south-dakota',         abbr: 'SD' },
+  { name: 'Tennessee',            slug: 'tennessee',            abbr: 'TN' },
+  { name: 'Texas',                slug: 'texas',                abbr: 'TX' },
+  { name: 'Utah',                 slug: 'utah',                 abbr: 'UT' },
+  { name: 'Vermont',              slug: 'vermont',              abbr: 'VT' },
+  { name: 'Virginia',             slug: 'virginia',             abbr: 'VA' },
+  { name: 'Washington',           slug: 'washington',           abbr: 'WA' },
+  { name: 'West Virginia',        slug: 'west-virginia',        abbr: 'WV' },
+  { name: 'Wisconsin',            slug: 'wisconsin',            abbr: 'WI' },
+  { name: 'Wyoming',              slug: 'wyoming',              abbr: 'WY' },
 ]
 
-export const EIA_NATIONAL_CODE = 'NUS'
+export const AAA_URL = 'https://gasprices.aaa.com/state-gas-price-averages/'
 
 export function getStateBySlug(slug: string): USState | undefined {
   return US_STATES.find(s => s.slug === slug)
 }
 
-export function getStateByEiaCode(code: string): USState | undefined {
-  return US_STATES.find(s => s.eiaCode === code)
+export function getStateByAbbr(abbr: string): USState | undefined {
+  return US_STATES.find(s => s.abbr === abbr)
 }
