@@ -198,11 +198,15 @@ export default function AlertModule({
               <button
                 type="button"
                 disabled
-                title="Coming soon"
-                className="px-3 py-2 cursor-default"
-                style={{ backgroundColor: 'var(--surface-2)', color: 'var(--text-faint)' }}
+                title="WhatsApp alerts coming soon"
+                className="px-3 py-2 cursor-not-allowed select-none"
+                style={{
+                  backgroundColor: 'var(--surface-2)',
+                  color: 'var(--text-faint)',
+                  opacity: 0.5,
+                }}
               >
-                WhatsApp <span style={{ fontSize: '11px' }}>Soon</span>
+                WhatsApp
               </button>
             </div>
           </div>
