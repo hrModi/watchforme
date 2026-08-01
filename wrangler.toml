@@ -1,0 +1,10 @@
+name = "watchforme"
+compatibility_date = "2024-09-23"
+compatibility_flags = ["nodejs_compat"]
+
+pages_build_output_dir = "app/.vercel/output/static"
+
+[vars]
+NEXT_PUBLIC_APP_URL = "https://watchforme.me"
+NEXT_PUBLIC_GA_ID = "G-E88RPKCB1S"
+EMAIL_FROM = "alerts@watchforme.me"
