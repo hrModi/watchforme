@@ -20,8 +20,8 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   title: {
-    default: 'watchforme.me | Free Price & Rate Watchers',
-    template: '%s | watchforme.me',
+    default: 'WatchForMe.me | Free Price & Rate Watchers',
+    template: '%s | WatchForMe.me',
   },
   description: 'Free fuel price alerts for India and the US. No signup, no account. Just enter your email or WhatsApp and get notified when prices move.',
   keywords: ['fuel price', 'petrol price', 'diesel price', 'gas price', 'price alert', 'India fuel price', 'US gas price'],
