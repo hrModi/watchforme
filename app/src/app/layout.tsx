@@ -1,6 +1,14 @@
 import type { Metadata } from 'next'
+import { Space_Grotesk } from 'next/font/google'
 import './globals.css'
 import Header from '@/components/Header'
+
+const spaceGrotesk = Space_Grotesk({
+  subsets: ['latin'],
+  weight: ['400', '500', '600', '700'],
+  variable: '--font-sans',
+  display: 'swap',
+})
 
 export const metadata: Metadata = {
   title: {
@@ -24,7 +32,7 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className="h-full">
+    <html lang="en" className={`h-full ${spaceGrotesk.variable}`}>
       <body className="bg-page min-h-full flex flex-col antialiased">
         <Header />
         <main id="main-content" className="flex-1">
@@ -35,7 +43,9 @@ export default function RootLayout({
           style={{ borderColor: 'var(--border)', color: 'var(--text-faint)' }}
         >
           <div className="max-w-6xl mx-auto px-4 sm:px-6 flex items-center justify-between gap-4">
-            <span>watchforme.me · Free forever · No signup</span>
+            <span style={{ fontWeight: 600, letterSpacing: '-0.02em' }}>watchforme<span style={{ color: 'var(--accent)', fontWeight: 500 }}>.me</span></span>
+            <span style={{ margin: '0 8px', opacity: 0.4 }}>·</span>
+            <span>Free forever · No signup</span>
             <a href="/privacy" style={{ color: 'var(--text-muted)' }}>Privacy</a>
           </div>
         </footer>

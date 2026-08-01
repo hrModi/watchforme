@@ -8,16 +8,26 @@ export default function Header() {
       style={{ backgroundColor: 'var(--surface)', borderColor: 'var(--border)' }}
     >
       <div className="max-w-6xl mx-auto px-4 sm:px-6 h-14 flex items-center justify-between">
-        <Link
-          href="/"
-          className="flex items-center gap-2 text-sm font-semibold tracking-tight"
-          style={{ color: 'var(--text)' }}
-        >
-          <svg width="20" height="14" viewBox="0 0 20 14" fill="none" aria-hidden="true" style={{ color: 'var(--accent)' }}>
-            <path d="M1 7C3.5 3 6.5 1 10 1s6.5 2 9 6c-2.5 4-5.5 6-9 6S3.5 11 1 7z" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round"/>
-            <circle cx="10" cy="7" r="2.5" fill="currentColor"/>
+        <Link href="/" className="flex items-center gap-2.5" aria-label="watchforme.me home">
+          {/* Icon badge */}
+          <svg width="28" height="28" viewBox="0 0 28 28" fill="none" aria-hidden="true" style={{ flexShrink: 0 }}>
+            <rect width="28" height="28" rx="7" fill="#1B59D8"/>
+            {/* Eye white */}
+            <path d="M5 14c2.4-3.8 5.2-5.8 9-5.8s6.6 2 9 5.8c-2.4 3.8-5.2 5.8-9 5.8S7.4 17.8 5 14z" fill="white"/>
+            {/* Iris */}
+            <circle cx="14" cy="14" r="3.2" fill="#1B59D8"/>
+            {/* Pupil shine */}
+            <circle cx="14" cy="14" r="1.4" fill="white"/>
           </svg>
-          <span>watchforme.me</span>
+
+          {/* Wordmark */}
+          <span
+            className="text-base leading-none"
+            style={{ fontWeight: 700, color: 'var(--text)', letterSpacing: '-0.03em' }}
+          >
+            watchforme
+            <span style={{ fontWeight: 500, color: 'var(--accent)', letterSpacing: '-0.01em' }}>.me</span>
+          </span>
         </Link>
 
         <CountrySwitcher />

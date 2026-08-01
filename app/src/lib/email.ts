@@ -80,7 +80,7 @@ function wrapper(content: string) {
       <table width="100%" cellpadding="0" cellspacing="0" style="max-width:520px;background:#ffffff;border-radius:12px;overflow:hidden;border:1px solid #e2e5ea;">
         <tr>
           <td style="background:#1B59D8;padding:20px 28px;">
-            <span style="color:#ffffff;font-size:15px;font-weight:700;letter-spacing:-0.01em;">watchforme.me</span>
+            <span style="color:#ffffff;font-size:15px;font-weight:700;letter-spacing:-0.03em;">watchforme</span><span style="color:rgba(255,255,255,0.7);font-size:15px;font-weight:500;letter-spacing:-0.01em;">.me</span>
           </td>
         </tr>
         <tr><td style="padding:28px;">${content}</td></tr>
