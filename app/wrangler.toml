@@ -4,6 +4,9 @@ compatibility_flags = ["nodejs_compat"]
 
 pages_build_output_dir = ".vercel/output/static"
 
+[build]
+command = "pnpm install --frozen-lockfile && pnpm run build:cf"
+
 # Non-secret public vars — secrets go in Cloudflare dashboard under
 # Pages > Settings > Environment Variables
 [vars]
