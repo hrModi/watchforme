@@ -2,9 +2,11 @@ name = "watchforme"
 compatibility_date = "2024-09-23"
 compatibility_flags = ["nodejs_compat"]
 
-# Cloudflare Pages deployment
-# Build command: pnpm run build:cf
-# Output directory: .vercel/output/static
+pages_build_output_dir = ".vercel/output/static"
 
+# Non-secret public vars — secrets go in Cloudflare dashboard under
+# Pages > Settings > Environment Variables
 [vars]
-NEXT_PUBLIC_APP_URL = "https://yourdomain.com"
+NEXT_PUBLIC_APP_URL = "https://watchforme.me"
+NEXT_PUBLIC_GA_ID = "G-E88RPKCB1S"
+EMAIL_FROM = "alerts@watchforme.me"
