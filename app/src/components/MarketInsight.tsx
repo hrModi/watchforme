@@ -39,7 +39,7 @@ export default function MarketInsight({ history, unit, label }: MarketInsightPro
         <>
           <div>
             <p className="text-xs" style={{ color: 'var(--text-faint)' }}>Today</p>
-            <p className="text-2xl font-bold tabular" style={{ color: 'var(--text)' }}>
+            <p className="font-display text-2xl font-bold tabular" style={{ color: 'var(--text)' }}>
               {fmt(history[0].value, unit)}
             </p>
           </div>
@@ -65,7 +65,7 @@ function Stat({ label, value, highlight }: { label: string; value: string; highl
   return (
     <div>
       <p className="text-xs" style={{ color: 'var(--text-faint)' }}>{label}</p>
-      <p className="text-base font-bold tabular" style={{ color: highlight ? 'var(--accent)' : 'var(--text)' }}>
+      <p className="font-display text-base font-bold tabular" style={{ color: highlight ? 'var(--accent)' : 'var(--text)' }}>
         {value}
       </p>
     </div>

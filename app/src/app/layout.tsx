@@ -1,13 +1,20 @@
 import type { Metadata } from 'next'
-import { Space_Grotesk } from 'next/font/google'
+import { Space_Grotesk, Inter } from 'next/font/google'
 import './globals.css'
 import Header from '@/components/Header'
 import GoogleAnalytics from '@/components/GoogleAnalytics'
 
 const spaceGrotesk = Space_Grotesk({
   subsets: ['latin'],
-  weight: ['400', '500', '600', '700'],
+  weight: ['500', '600', '700'],
   variable: '--font-sans',
+  display: 'swap',
+})
+
+const inter = Inter({
+  subsets: ['latin'],
+  weight: ['400', '500', '600'],
+  variable: '--font-body',
   display: 'swap',
 })
 
@@ -36,7 +43,7 @@ export default function RootLayout({
   const year = new Date().getFullYear()
 
   return (
-    <html lang="en" className={`h-full ${spaceGrotesk.variable}`}>
+    <html lang="en" className={`h-full ${spaceGrotesk.variable} ${inter.variable}`}>
       <body className="bg-page min-h-full flex flex-col antialiased">
         <GoogleAnalytics />
         <Header />
@@ -49,8 +56,8 @@ export default function RootLayout({
         >
           <div className="max-w-6xl mx-auto px-4 sm:px-6 flex flex-wrap items-center gap-x-3 gap-y-1 justify-between">
             <span>
-              <span style={{ fontWeight: 600, letterSpacing: '-0.02em', color: 'var(--text-muted)' }}>
-                watchforme<span style={{ color: 'var(--accent)', fontWeight: 500 }}>.me</span>
+              <span className="font-display" style={{ fontWeight: 700, letterSpacing: '-0.02em', color: 'var(--text-muted)' }}>
+                WatchForMe<span style={{ color: 'var(--signal-blue)', fontWeight: 500 }}>.me</span>
               </span>
               <span style={{ margin: '0 6px', opacity: 0.35 }}>·</span>
               <span>&copy; {year} watchforme.me</span>

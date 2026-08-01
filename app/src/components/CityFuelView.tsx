@@ -131,10 +131,10 @@ export default function CityFuelView({
           {active.rate ? (
             <div>
               <div className="flex items-baseline gap-2">
-                <span className="text-6xl font-bold tabular tracking-tight" style={{ color: 'var(--text)' }}>
+                <span className="font-display text-6xl font-bold tabular tracking-tight" style={{ color: 'var(--text)' }}>
                   {sym}{active.rate.value.toFixed(2)}
                 </span>
-                <span className="text-xl font-normal" style={{ color: 'var(--text-muted)' }}>
+                <span className="font-display text-xl font-normal" style={{ color: 'var(--text-muted)' }}>
                   {denom}
                 </span>
                 {active.rate.trend !== 'flat' && (

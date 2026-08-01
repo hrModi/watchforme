@@ -8,25 +8,33 @@ export default function Header() {
       style={{ backgroundColor: 'var(--surface)', borderColor: 'var(--border)' }}
     >
       <div className="max-w-6xl mx-auto px-4 sm:px-6 h-14 flex items-center justify-between">
-        <Link href="/" className="flex items-center gap-2.5" aria-label="watchforme.me home">
-          {/* Icon badge */}
-          <svg width="28" height="28" viewBox="0 0 28 28" fill="none" aria-hidden="true" style={{ flexShrink: 0 }}>
-            <rect width="28" height="28" rx="7" fill="#1B59D8"/>
-            {/* Eye white */}
-            <path d="M5 14c2.4-3.8 5.2-5.8 9-5.8s6.6 2 9 5.8c-2.4 3.8-5.2 5.8-9 5.8S7.4 17.8 5 14z" fill="white"/>
-            {/* Iris */}
-            <circle cx="14" cy="14" r="3.2" fill="#1B59D8"/>
-            {/* Pupil shine */}
-            <circle cx="14" cy="14" r="1.4" fill="white"/>
+        <Link href="/" className="flex items-center gap-2.5" aria-label="WatchForMe home">
+          {/* Brand mark: viewfinder reticle — 4 L-shaped corner brackets + signal dot */}
+          <svg
+            width="30"
+            height="30"
+            viewBox="0 0 100 100"
+            fill="none"
+            aria-hidden="true"
+            style={{ flexShrink: 0, color: 'var(--text)' }}
+          >
+            <path
+              d="M15,35 L15,15 L35,15 M65,15 L85,15 L85,35 M15,65 L15,85 L35,85 M85,65 L85,85 L65,85"
+              stroke="currentColor"
+              strokeWidth="8"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+            <circle cx="50" cy="50" r="10" fill="var(--signal-blue)" />
           </svg>
 
           {/* Wordmark */}
           <span
-            className="text-base leading-none"
-            style={{ fontWeight: 700, color: 'var(--text)', letterSpacing: '-0.03em' }}
+            className="font-display text-base leading-none"
+            style={{ fontWeight: 700, color: 'var(--text)', letterSpacing: '-0.02em' }}
           >
-            watchforme
-            <span style={{ fontWeight: 500, color: 'var(--accent)', letterSpacing: '-0.01em' }}>.me</span>
+            WatchForMe
+            <span style={{ fontWeight: 500, color: 'var(--signal-blue)', letterSpacing: '-0.01em' }}>.me</span>
           </span>
         </Link>
 

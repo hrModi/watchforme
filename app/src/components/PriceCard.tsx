@@ -68,7 +68,7 @@ export default function PriceCard({
       </div>
 
       {primaryRate ? (
-        <p className="text-2xl font-bold tabular tracking-tight" style={{ color: 'var(--text)' }}>
+        <p className="font-display text-2xl font-bold tabular tracking-tight" style={{ color: 'var(--text)' }}>
           {fmt(primaryRate.value, primaryRate.unit)}
           <span className="text-sm font-normal ml-1" style={{ color: 'var(--text-muted)' }}>
             /{primaryRate.unit.includes('gal') ? 'gal' : 'L'}
