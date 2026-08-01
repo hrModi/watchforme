@@ -1,70 +1,85 @@
 import type { Metadata } from 'next'
-import Hero from '@/components/Hero'
-import RatesTable from '@/components/RatesTable'
-import AlertModule from '@/components/AlertModule'
+import FuelSearch from '@/components/FuelSearch'
+import PriceCard from '@/components/PriceCard'
 import AdSlot from '@/components/AdSlot'
-import { getRegionRates, getAllRegionRates } from '@/lib/rates'
+import { getAllRegionRates } from '@/lib/rates'
 import { INDIA_CITIES } from '@/config/india-cities'
 
 export const revalidate = 3600
 
 export const metadata: Metadata = {
-  title: 'India Fuel Prices Today | Petrol & Diesel Rates',
-  description: 'Today\'s petrol and diesel prices across all major Indian cities. Set a free alert to get notified when prices change in your city.',
+  title: 'India Fuel Prices Today | Petrol & Diesel Rates by City',
+  description: 'Today\'s petrol and diesel prices across all major Indian cities. Find your city and set a free alert to get notified when prices change.',
 }
 
+const POPULAR = [
+  { name: 'Delhi', slug: 'delhi' },
+  { name: 'Mumbai', slug: 'mumbai' },
+  { name: 'Bangalore', slug: 'bengaluru' },
+  { name: 'Chennai', slug: 'chennai' },
+  { name: 'Hyderabad', slug: 'hyderabad' },
+]
+
 export default async function IndiaFuelPage() {
-  const [nationalRates, cityRates] = await Promise.all([
-    getRegionRates('fuel', 'IN', null, ['petrol', 'diesel']),
-    getAllRegionRates('fuel', 'IN', ['petrol', 'diesel']),
-  ])
+  const cityRates = await getAllRegionRates('fuel', 'IN', ['petrol', 'diesel'])
 
-  // Attach display names from city config
-  const regionsWithNames = cityRates.map(r => ({
-    ...r,
-    name: INDIA_CITIES.find(c => c.slug === r.region)?.name ?? r.region,
-  }))
-
-  const petrol = nationalRates.find(r => r.subtype === 'petrol') ?? null
-  const diesel = nationalRates.find(r => r.subtype === 'diesel') ?? null
+  const ratesByRegion = new Map(cityRates.map(r => [r.region, r]))
 
   return (
     <>
-      <Hero
-        primaryRate={petrol}
-        secondaryRate={diesel}
-        locationName="India · National Average"
-        country="IN"
-      />
+      {/* Search header */}
+      <div
+        className="px-4 sm:px-6 py-8"
+        style={{ borderBottom: '1px solid var(--border)', backgroundColor: 'var(--surface)' }}
+      >
+        <div className="max-w-6xl mx-auto">
+          <h1 className="text-2xl font-bold mb-1" style={{ color: 'var(--text)' }}>
+            India Fuel Prices Today
+          </h1>
+          <p className="text-sm mb-5" style={{ color: 'var(--text-muted)' }}>
+            Petrol and diesel prices across all major cities, updated daily.
+          </p>
+          <FuelSearch
+            items={INDIA_CITIES.map(c => ({ name: c.name, slug: c.slug, state: c.state }))}
+            basePath="/fuel-price/india"
+            fuelTypes={['Petrol', 'Diesel']}
+            popularItems={POPULAR}
+          />
+        </div>
+      </div>
 
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8 space-y-6">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8 space-y-8">
         <AdSlot slot="A" />
 
-        <AlertModule
-          watcher_type="fuel"
-          country="IN"
-          subtype="petrol"
-          unit="₹/L"
-          currentValue={petrol?.value}
-        />
-
-        <AdSlot slot="B" />
-
-        <section aria-labelledby="city-table-heading">
+        {/* City cards grid */}
+        <section aria-labelledby="cities-heading">
           <h2
-            id="city-table-heading"
-            className="text-base font-semibold mb-3"
+            id="cities-heading"
+            className="text-base font-semibold mb-4"
             style={{ color: 'var(--text)' }}
           >
-            Petrol &amp; Diesel Prices by City
+            Prices by City
           </h2>
-          <RatesTable
-            regions={regionsWithNames}
-            basePath="/fuel-price/india"
-            primarySubtype="petrol"
-            secondarySubtype="diesel"
-            regionLabel="City"
-          />
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+            {INDIA_CITIES.map(city => {
+              const r = ratesByRegion.get(city.slug)
+              const petrol = r?.rates.find(x => x.subtype === 'petrol')
+              const diesel = r?.rates.find(x => x.subtype === 'diesel')
+              return (
+                <PriceCard
+                  key={city.slug}
+                  name={city.name}
+                  state={city.state}
+                  slug={city.slug}
+                  basePath="/fuel-price/india"
+                  primaryRate={petrol}
+                  primaryLabel="Petrol"
+                  secondaryRate={diesel}
+                  secondaryLabel="Diesel"
+                />
+              )
+            })}
+          </div>
         </section>
 
         <AdSlot slot="C" />
@@ -80,7 +95,7 @@ export default async function IndiaFuelPage() {
           </p>
           <p className="text-sm leading-relaxed mt-2" style={{ color: 'var(--text-muted)' }}>
             watchforme.me pulls the latest published rates every morning after the daily revision and updates
-            all city pages automatically. Set an alert above to get notified the next time prices move in your city.
+            all city pages automatically. Click a city above to set a price alert.
           </p>
         </section>
       </div>

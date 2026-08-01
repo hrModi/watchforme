@@ -89,6 +89,32 @@ async function getAllRegionRatesFallback(
   return groupByRegion(latest)
 }
 
+export async function getHistoricalRates(
+  watcher_type: WatcherType,
+  country: Country,
+  region: string | null,
+  subtype: string,
+  days: number = 30,
+): Promise<Array<{ value: number; fetched_at: string }>> {
+  const since = new Date()
+  since.setDate(since.getDate() - days)
+
+  let query = db
+    .from('rates')
+    .select('value, fetched_at')
+    .eq('watcher_type', watcher_type)
+    .eq('country', country)
+    .eq('subtype', subtype)
+    .gte('fetched_at', since.toISOString())
+    .order('fetched_at', { ascending: true })
+
+  query = region === null ? query.is('region', null) : query.eq('region', region)
+
+  const { data, error } = await query
+  if (error || !data) return []
+  return data.map(r => ({ value: Number(r.value), fetched_at: r.fetched_at }))
+}
+
 function groupByRegion(rows: Array<{ region: string; subtype: string; value: number; unit: string; fetched_at: string }>): RegionRate[] {
   const map = new Map<string, RegionRate>()
 

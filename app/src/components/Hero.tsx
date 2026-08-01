@@ -21,11 +21,12 @@ function formatTimestamp(iso: string): string {
 }
 
 function TrendArrow({ trend, delta, unit }: { trend: string; delta: number; unit: string }) {
-  const symbol = trend === 'up' ? '↑' : trend === 'down' ? '↓' : '→'
+  const symbol = trend === 'up' ? '↑' : trend === 'down' ? '↓' : null
   const label = trend === 'flat' ? 'No change' : `${symbol} ${Math.abs(delta).toFixed(2)} ${unit}`
+  if (!symbol) return <span className="text-sm" style={{ color: 'var(--text-faint)' }} aria-label="No change">No change</span>
   return (
     <span className={`text-sm font-medium trend-${trend}`} aria-label={label}>
-      {symbol} {trend !== 'flat' && Math.abs(delta).toFixed(2)}
+      {symbol} {Math.abs(delta).toFixed(2)}
     </span>
   )
 }

@@ -31,9 +31,18 @@ export default function CountrySwitcher() {
   const [current, setCurrent] = useState<string>('IN')
 
   useEffect(() => {
-    const stored = localStorage.getItem(STORAGE_KEY)
-    if (stored) setCurrent(stored)
-  }, [])
+    // Sync switcher to whatever country the current page is actually showing
+    if (/\/india(\/|$)/.test(pathname)) {
+      setCurrent('IN')
+      localStorage.setItem(STORAGE_KEY, 'IN')
+    } else if (/\/us(\/|$)/.test(pathname)) {
+      setCurrent('US')
+      localStorage.setItem(STORAGE_KEY, 'US')
+    } else {
+      const stored = localStorage.getItem(STORAGE_KEY)
+      if (stored) setCurrent(stored)
+    }
+  }, [pathname])
 
   function handleSelect(code: string) {
     setOpen(false)

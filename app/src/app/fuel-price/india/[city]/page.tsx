@@ -1,10 +1,8 @@
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
-import Hero from '@/components/Hero'
-import AlertModule from '@/components/AlertModule'
-import RatesTable from '@/components/RatesTable'
+import CityFuelView, { type FuelData, type NearbyItem } from '@/components/CityFuelView'
 import AdSlot from '@/components/AdSlot'
-import { getRegionRates, getAllRegionRates } from '@/lib/rates'
+import { getRegionRates, getHistoricalRates, getAllRegionRates } from '@/lib/rates'
 import { INDIA_CITIES, getCityBySlug } from '@/config/india-cities'
 
 export const revalidate = 3600
@@ -21,13 +19,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { city: citySlug } = await params
   const city = getCityBySlug(citySlug)
   if (!city) return {}
-
   return {
-    title: `${city.name} Petrol & Diesel Price Today`,
-    description: `Today's petrol and diesel price in ${city.name}, ${city.state}. Set a free alert to get notified when the price changes. No account needed.`,
-    alternates: {
-      canonical: `/fuel-price/india/${city.slug}`,
-    },
+    title: `${city.name} Petrol, Diesel & CNG Price Today`,
+    description: `Today's petrol, diesel and CNG prices in ${city.name}, ${city.state}. See 30-day trend and set a free alert.`,
+    alternates: { canonical: `/fuel-price/india/${city.slug}` },
   }
 }
 
@@ -36,74 +31,58 @@ export default async function IndiaCityFuelPage({ params }: Props) {
   const city = getCityBySlug(citySlug)
   if (!city) notFound()
 
-  const [cityRates, allCityRates] = await Promise.all([
+  const [cityRates, petrolHistory, dieselHistory, allCityRates] = await Promise.all([
     getRegionRates('fuel', 'IN', citySlug, ['petrol', 'diesel']),
+    getHistoricalRates('fuel', 'IN', citySlug, 'petrol', 30),
+    getHistoricalRates('fuel', 'IN', citySlug, 'diesel', 30),
     getAllRegionRates('fuel', 'IN', ['petrol', 'diesel']),
   ])
-
-  const regionsWithNames = allCityRates.map(r => ({
-    ...r,
-    name: INDIA_CITIES.find(c => c.slug === r.region)?.name ?? r.region,
-  }))
 
   const petrol = cityRates.find(r => r.subtype === 'petrol') ?? null
   const diesel = cityRates.find(r => r.subtype === 'diesel') ?? null
 
+  const fuels: FuelData[] = [
+    { subtype: 'petrol', label: 'Petrol', rate: petrol, history: petrolHistory },
+    { subtype: 'diesel', label: 'Diesel', rate: diesel, history: dieselHistory },
+    { subtype: 'cng', label: 'CNG', rate: null, history: [], status: 'coming_soon' },
+  ]
+
+  // Same-state nearby cities (max 6, excluding current)
+  const ratesByRegion = new Map(allCityRates.map(r => [r.region, r]))
+  const nearbyItems: NearbyItem[] = INDIA_CITIES
+    .filter(c => c.state === city.state && c.slug !== city.slug)
+    .slice(0, 6)
+    .map(c => {
+      const r = ratesByRegion.get(c.slug)
+      const p = r?.rates.find(x => x.subtype === 'petrol')
+      return { name: c.name, slug: c.slug, price: p?.value ?? null, unit: '₹/L' }
+    })
+
   return (
     <>
-      <Hero
-        primaryRate={petrol}
-        secondaryRate={diesel}
-        locationName={`${city.name}, ${city.state}`}
+      <AdSlot slot="A" />
+
+      <CityFuelView
+        fuels={fuels}
+        unit="₹/L"
         country="IN"
+        region={city.slug}
+        locationName={`${city.name}, ${city.state}`}
+        backHref="/fuel-price/india"
+        backLabel="India Fuel Prices"
+        nearbyItems={nearbyItems}
+        allItemsHref="/fuel-price/india"
+        allItemsLabel="All cities"
+        nearbyHeading={`Cities in ${city.state}`}
+        aboutHeading={`About ${city.name} Fuel Prices`}
+        aboutParagraphs={[
+          `Petrol and diesel prices in ${city.name} are revised daily by oil marketing companies and reflect local state taxes and VAT levied by ${city.state}.`,
+          `Use the alert form to get notified by email or WhatsApp when ${city.name} fuel prices change.`,
+        ]}
       />
 
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8 space-y-6">
-        <AdSlot slot="A" />
-
-        <AlertModule
-          watcher_type="fuel"
-          country="IN"
-          region={city.slug}
-          subtype="petrol"
-          unit="₹/L"
-          currentValue={petrol?.value}
-        />
-
-        <AdSlot slot="B" />
-
-        <section aria-labelledby="cities-table-heading">
-          <h2
-            id="cities-table-heading"
-            className="text-base font-semibold mb-3"
-            style={{ color: 'var(--text)' }}
-          >
-            Prices in Other Cities
-          </h2>
-          <RatesTable
-            regions={regionsWithNames.filter(r => r.region !== citySlug)}
-            basePath="/fuel-price/india"
-            primarySubtype="petrol"
-            secondarySubtype="diesel"
-            regionLabel="City"
-          />
-        </section>
-
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 pb-8">
         <AdSlot slot="C" />
-
-        <section aria-labelledby="about-heading">
-          <h2 id="about-heading" className="text-base font-semibold mb-2" style={{ color: 'var(--text)' }}>
-            About {city.name} Fuel Prices
-          </h2>
-          <p className="text-sm leading-relaxed" style={{ color: 'var(--text-muted)' }}>
-            Petrol and diesel prices in {city.name} are revised daily by oil marketing companies and
-            reflect local state taxes and VAT levied by {city.state}. Prices may differ from the national
-            average due to these state-level levies.
-          </p>
-          <p className="text-sm leading-relaxed mt-2" style={{ color: 'var(--text-muted)' }}>
-            Use the alert form above to get notified by email or WhatsApp the next time {city.name} fuel prices change.
-          </p>
-        </section>
       </div>
     </>
   )

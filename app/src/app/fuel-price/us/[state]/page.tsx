@@ -1,10 +1,8 @@
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
-import Hero from '@/components/Hero'
-import AlertModule from '@/components/AlertModule'
-import RatesTable from '@/components/RatesTable'
+import CityFuelView, { type FuelData, type NearbyItem } from '@/components/CityFuelView'
 import AdSlot from '@/components/AdSlot'
-import { getRegionRates, getAllRegionRates } from '@/lib/rates'
+import { getRegionRates, getHistoricalRates, getAllRegionRates } from '@/lib/rates'
 import { US_STATES, getStateBySlug } from '@/config/us-states'
 
 export const revalidate = 3600
@@ -21,13 +19,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { state: stateSlug } = await params
   const state = getStateBySlug(stateSlug)
   if (!state) return {}
-
   return {
-    title: `${state.name} Gas Price Today | Weekly EIA Data`,
-    description: `This week's gasoline and diesel price in ${state.name}. Set a free alert to get notified when prices change. No account needed.`,
-    alternates: {
-      canonical: `/fuel-price/us/${state.slug}`,
-    },
+    title: `${state.name} Gas Price Today | Gasoline & Diesel`,
+    description: `Today's gasoline and diesel price in ${state.name}. See 30-day trend and set a free alert.`,
+    alternates: { canonical: `/fuel-price/us/${state.slug}` },
   }
 }
 
@@ -36,74 +31,59 @@ export default async function USStateFuelPage({ params }: Props) {
   const state = getStateBySlug(stateSlug)
   if (!state) notFound()
 
-  const [stateRates, allStateRates] = await Promise.all([
+  const [stateRates, gasolineHistory, dieselHistory, allStateRates] = await Promise.all([
     getRegionRates('fuel', 'US', stateSlug, ['gasoline', 'diesel']),
+    getHistoricalRates('fuel', 'US', stateSlug, 'gasoline', 30),
+    getHistoricalRates('fuel', 'US', stateSlug, 'diesel', 30),
     getAllRegionRates('fuel', 'US', ['gasoline', 'diesel']),
   ])
-
-  const regionsWithNames = allStateRates.map(r => ({
-    ...r,
-    name: US_STATES.find(s => s.slug === r.region)?.name ?? r.region,
-  }))
 
   const gasoline = stateRates.find(r => r.subtype === 'gasoline') ?? null
   const diesel = stateRates.find(r => r.subtype === 'diesel') ?? null
 
+  const fuels: FuelData[] = [
+    { subtype: 'gasoline', label: 'Gasoline', rate: gasoline, history: gasolineHistory },
+    { subtype: 'diesel',   label: 'Diesel',   rate: diesel,   history: dieselHistory },
+  ]
+
+  // 5 alphabetically adjacent states as "Other States"
+  const ratesByRegion = new Map(allStateRates.map(r => [r.region, r]))
+  const stateIdx = US_STATES.findIndex(s => s.slug === stateSlug)
+  const nearbyItems: NearbyItem[] = US_STATES
+    .filter(s => s.slug !== stateSlug)
+    .slice(Math.max(0, stateIdx - 3), stateIdx + 5)
+    .slice(0, 5)
+    .map(s => {
+      const r = ratesByRegion.get(s.slug)
+      const g = r?.rates.find(x => x.subtype === 'gasoline')
+      return { name: s.name, slug: s.slug, price: g?.value ?? null, unit: '$/gal' }
+    })
+
   return (
     <>
-      <Hero
-        primaryRate={gasoline}
-        secondaryRate={diesel}
-        locationName={`${state.name} (${state.abbr})`}
+      <AdSlot slot="A" />
+
+      <CityFuelView
+        fuels={fuels}
+        unit="$/gal"
         country="US"
+        region={state.slug}
+        locationName={`${state.name} (${state.abbr})`}
+        backHref="/fuel-price/us"
+        backLabel="US Gas Prices"
+        nearbyItems={nearbyItems}
+        allItemsHref="/fuel-price/us"
+        allItemsLabel="All states"
+        nearbyHeading="Other States"
+        aboutHeading={`About ${state.name} Gas Prices`}
+        aboutParagraphs={[
+          `${state.name} gasoline and diesel prices are sourced from AAA, updated daily. Prices reflect the retail average across the state.`,
+          `Use the alert form to get notified when ${state.name} gas prices cross a level you set.`,
+        ]}
       />
 
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8 space-y-6">
-        <AdSlot slot="A" />
-
-        <AlertModule
-          watcher_type="fuel"
-          country="US"
-          region={state.slug}
-          subtype="gasoline"
-          unit="$/gal"
-          currentValue={gasoline?.value}
-        />
-
-        <AdSlot slot="B" />
-
-        <section aria-labelledby="states-table-heading">
-          <h2
-            id="states-table-heading"
-            className="text-base font-semibold mb-3"
-            style={{ color: 'var(--text)' }}
-          >
-            Gas Prices in Other States
-          </h2>
-          <RatesTable
-            regions={regionsWithNames.filter(r => r.region !== stateSlug)}
-            basePath="/fuel-price/us"
-            primarySubtype="gasoline"
-            secondarySubtype="diesel"
-            regionLabel="State"
-          />
-        </section>
-
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 pb-8">
         <AdSlot slot="C" />
-
-        <section aria-labelledby="about-heading">
-          <h2 id="about-heading" className="text-base font-semibold mb-2" style={{ color: 'var(--text)' }}>
-            About {state.name} Gas Prices
-          </h2>
-          <p className="text-sm leading-relaxed" style={{ color: 'var(--text-muted)' }}>
-            {state.name} gasoline prices are published weekly by the U.S. Energy Information Administration.
-            Prices reflect the retail average across the state and are updated every Monday after the EIA releases
-            its weekly petroleum report.
-          </p>
-          <p className="text-sm leading-relaxed mt-2" style={{ color: 'var(--text-muted)' }}>
-            Use the alert above to get notified when {state.name} gas prices cross a level you set.
-          </p>
-        </section>
       </div>
     </>
   )
