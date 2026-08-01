@@ -31,20 +31,22 @@ export default async function IndiaCityFuelPage({ params }: Props) {
   const city = getCityBySlug(citySlug)
   if (!city) notFound()
 
-  const [cityRates, petrolHistory, dieselHistory, allCityRates] = await Promise.all([
-    getRegionRates('fuel', 'IN', citySlug, ['petrol', 'diesel']),
+  const [cityRates, petrolHistory, dieselHistory, cngHistory, allCityRates] = await Promise.all([
+    getRegionRates('fuel', 'IN', citySlug, ['petrol', 'diesel', 'cng']),
     getHistoricalRates('fuel', 'IN', citySlug, 'petrol', 30),
     getHistoricalRates('fuel', 'IN', citySlug, 'diesel', 30),
+    getHistoricalRates('fuel', 'IN', citySlug, 'cng', 30),
     getAllRegionRates('fuel', 'IN', ['petrol', 'diesel']),
   ])
 
   const petrol = cityRates.find(r => r.subtype === 'petrol') ?? null
   const diesel = cityRates.find(r => r.subtype === 'diesel') ?? null
+  const cng = cityRates.find(r => r.subtype === 'cng') ?? null
 
   const fuels: FuelData[] = [
     { subtype: 'petrol', label: 'Petrol', rate: petrol, history: petrolHistory },
     { subtype: 'diesel', label: 'Diesel', rate: diesel, history: dieselHistory },
-    { subtype: 'cng', label: 'CNG', rate: null, history: [], status: 'coming_soon' },
+    { subtype: 'cng', label: 'CNG', rate: cng, history: cngHistory, unit: '₹/kg' },
   ]
 
   // Same-state nearby cities (max 6, excluding current)
@@ -76,7 +78,7 @@ export default async function IndiaCityFuelPage({ params }: Props) {
         nearbyHeading={`Cities in ${city.state}`}
         aboutHeading={`About ${city.name} Fuel Prices`}
         aboutParagraphs={[
-          `Petrol and diesel prices in ${city.name} are revised daily by oil marketing companies and reflect local state taxes and VAT levied by ${city.state}.`,
+          `Petrol, diesel, and CNG prices in ${city.name} are revised daily by oil marketing companies and reflect local state taxes and VAT levied by ${city.state}. CNG prices may not be available in all cities.`,
           `Use the alert form to get notified by email or WhatsApp when ${city.name} fuel prices change.`,
         ]}
       />

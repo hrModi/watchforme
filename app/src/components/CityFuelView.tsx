@@ -12,6 +12,7 @@ export interface FuelData {
   label: string
   rate: RateWithTrend | null
   history: Array<{ value: number; fetched_at: string }>
+  unit?: string              // overrides the page-level unit (e.g. CNG uses ₹/kg vs ₹/L)
   status?: 'live' | 'coming_soon'
 }
 
@@ -66,8 +67,9 @@ export default function CityFuelView({
   const [activeSubtype, setActiveSubtype] = useState(firstLive.subtype)
 
   const active = fuels.find(f => f.subtype === activeSubtype) ?? firstLive
-  const sym = unit.startsWith('₹') ? '₹' : '$'
-  const denom = unit.replace(/^[₹$]/, '') // '/L' or '/gal'
+  const activeUnit = active.unit ?? unit
+  const sym = activeUnit.startsWith('₹') ? '₹' : '$'
+  const denom = activeUnit.replace(/^[₹$]/, '') // '/L', '/kg', or '/gal'
 
   return (
     <>
@@ -167,13 +169,13 @@ export default function CityFuelView({
               country={country}
               region={region}
               subtype={active.subtype}
-              unit={unit}
+              unit={activeUnit}
               currentValue={active.rate?.value}
             />
 
             <PriceTrendChart
               history={active.history}
-              unit={unit}
+              unit={activeUnit}
               label={active.label}
             />
 
@@ -193,7 +195,7 @@ export default function CityFuelView({
           <aside className="space-y-6">
             <MarketInsight
               history={active.history}
-              unit={unit}
+              unit={activeUnit}
               label={active.label}
             />
 

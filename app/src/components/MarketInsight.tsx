@@ -30,7 +30,7 @@ export default function MarketInsight({ history, unit, label }: MarketInsightPro
       style={{ backgroundColor: 'var(--surface)', borderColor: 'var(--border)' }}
     >
       <p className="text-xs font-semibold tracking-wider uppercase mb-3" style={{ color: 'var(--text-muted)' }}>
-        {label} — Market Data
+        {label} Market Data
       </p>
 
       {history.length === 0 ? (

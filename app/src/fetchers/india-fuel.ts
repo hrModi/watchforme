@@ -10,7 +10,7 @@ const BASE_URL = 'https://petrolpriceindia.com'
 const SOURCE = 'petrolpriceindia'
 const UA = 'Mozilla/5.0 (compatible; WatcherBot/1.0; +https://watchforme.me)'
 
-async function fetchPrice(citySourceSlug: string, fuelType: 'petrol' | 'diesel'): Promise<number | null> {
+async function fetchPrice(citySourceSlug: string, fuelType: 'petrol' | 'diesel' | 'cng'): Promise<number | null> {
   const url = `${BASE_URL}/${fuelType}-price-in-${citySourceSlug}.html`
   try {
     const res = await fetch(url, {
@@ -36,9 +36,10 @@ export async function runIndiaFuelFetcher(): Promise<{ success: number; failed: 
     const slug = city.sourceSlug ?? city.slug
     if (slug === 'skip') continue
 
-    const [petrol, diesel] = await Promise.all([
+    const [petrol, diesel, cng] = await Promise.all([
       fetchPrice(slug, 'petrol'),
       fetchPrice(slug, 'diesel'),
+      fetchPrice(slug, 'cng'),
     ])
 
     if (petrol === null && diesel === null) {
@@ -52,6 +53,9 @@ export async function runIndiaFuelFetcher(): Promise<{ success: number; failed: 
     }
     if (diesel !== null) {
       rows.push({ country: 'IN', region: city.slug, subtype: 'diesel', value: diesel, unit: '₹/L', source: SOURCE })
+    }
+    if (cng !== null) {
+      rows.push({ country: 'IN', region: city.slug, subtype: 'cng', value: cng, unit: '₹/kg', source: SOURCE })
     }
   }
 
@@ -71,6 +75,12 @@ export async function runIndiaFuelFetcher(): Promise<{ success: number; failed: 
   if (dieselValues.length > 0) {
     const avg = dieselValues.reduce((a, b) => a + b, 0) / dieselValues.length
     rows.push({ country: 'IN', region: null, subtype: 'diesel', value: Number(avg.toFixed(2)), unit: '₹/L', source: 'computed' })
+  }
+
+  const cngValues = rows.filter(r => r.subtype === 'cng' && r.region !== null).map(r => r.value)
+  if (cngValues.length > 0) {
+    const avg = cngValues.reduce((a, b) => a + b, 0) / cngValues.length
+    rows.push({ country: 'IN', region: null, subtype: 'cng', value: Number(avg.toFixed(2)), unit: '₹/kg', source: 'computed' })
   }
 
   // Delete today's rows before inserting to keep the fetch idempotent
