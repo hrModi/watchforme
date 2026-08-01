@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
 import { createAlert } from '@/lib/alerts'
+import { sendConfirmationEmail } from '@/lib/email'
 
 export const runtime = 'edge'
 
@@ -14,6 +15,7 @@ const schema = z.object({
   subtype: z.string(),
   operator: z.enum(['above', 'below', 'change_pct']),
   threshold: z.number().positive(),
+  unit: z.string().optional(),
 }).superRefine((data, ctx) => {
   if (data.channel === 'email' && !data.email) {
     ctx.addIssue({ code: z.ZodIssueCode.custom, message: 'email required', path: ['email'] })
@@ -58,8 +60,13 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // TODO: Send confirmation email or WhatsApp message
-    // await sendConfirmation(alert)
+    if (alert.channel === 'email') {
+      try {
+        await sendConfirmationEmail(alert, parsed.data.unit ?? '₹/L')
+      } catch (err) {
+        console.error('Failed to send confirmation email:', err)
+      }
+    }
 
     return NextResponse.json({ message: 'Confirmation sent' }, { status: 201 })
   } catch (err) {

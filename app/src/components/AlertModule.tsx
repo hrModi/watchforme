@@ -77,7 +77,7 @@ export default function AlertModule({
       const body: Record<string, unknown> = {
         watcher_type, country, region, subtype,
         operator, threshold: parseFloat(threshold),
-        channel,
+        channel, unit,
         ...(channel === 'email' ? { email: contact } : { phone: contact }),
       }
       const res = await fetch('/api/alerts', {
@@ -183,21 +183,27 @@ export default function AlertModule({
           <div className="flex flex-col gap-1">
             <label className="text-xs" style={{ color: 'var(--text-muted)' }}>Notify via</label>
             <div className="flex rounded-lg border overflow-hidden text-sm" style={{ borderColor: 'var(--border)' }}>
-              {(['email', 'whatsapp'] as Channel[]).map((c, i) => (
-                <button
-                  key={c}
-                  type="button"
-                  onClick={() => { setChannel(c); setContact(''); setErrors({}) }}
-                  className="px-3 py-2 capitalize transition-colors"
-                  style={{
-                    backgroundColor: channel === c ? 'var(--accent)' : 'var(--surface-2)',
-                    color: channel === c ? '#fff' : 'var(--text-muted)',
-                    borderRight: i === 0 ? '1px solid var(--border)' : undefined,
-                  }}
-                >
-                  {c === 'email' ? 'Email' : 'WhatsApp'}
-                </button>
-              ))}
+              <button
+                type="button"
+                onClick={() => { setChannel('email'); setContact(''); setErrors({}) }}
+                className="px-3 py-2 transition-colors"
+                style={{
+                  backgroundColor: 'var(--accent)',
+                  color: '#fff',
+                  borderRight: '1px solid var(--border)',
+                }}
+              >
+                Email
+              </button>
+              <button
+                type="button"
+                disabled
+                title="Coming soon"
+                className="px-3 py-2 cursor-default"
+                style={{ backgroundColor: 'var(--surface-2)', color: 'var(--text-faint)' }}
+              >
+                WhatsApp <span style={{ fontSize: '11px' }}>Soon</span>
+              </button>
             </div>
           </div>
 

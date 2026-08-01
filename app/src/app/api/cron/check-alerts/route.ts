@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { verifyCronRequest } from '@/lib/tokens'
 import { dbAdmin } from '@/lib/db'
 import { updateLastValue, triggerAlert } from '@/lib/alerts'
+import { sendTriggerEmail } from '@/lib/email'
 import type { Alert } from '@/types'
 
 export const runtime = 'edge'
@@ -28,7 +29,7 @@ export async function POST(request: NextRequest) {
     // Get the latest rate for this alert's target
     let rateQuery = dbAdmin
       .from('rates')
-      .select('value')
+      .select('value, unit')
       .eq('watcher_type', alert.watcher_type)
       .eq('country', alert.country)
       .eq('subtype', alert.subtype)
@@ -43,6 +44,7 @@ export async function POST(request: NextRequest) {
     if (!rateRows || rateRows.length === 0) continue
 
     const currentValue = Number(rateRows[0].value)
+    const unit: string = rateRows[0].unit ?? '₹/L'
     checked++
 
     let shouldTrigger = false
@@ -59,8 +61,13 @@ export async function POST(request: NextRequest) {
     await updateLastValue(alert.id, currentValue)
 
     if (shouldTrigger) {
-      // TODO: Send notification (email or WhatsApp)
-      // await sendTriggerNotification(alert, currentValue)
+      if (alert.channel === 'email') {
+        try {
+          await sendTriggerEmail(alert, currentValue, unit)
+        } catch (err) {
+          console.error('Failed to send trigger email:', err)
+        }
+      }
       await triggerAlert(alert.id)
       triggered++
     }
