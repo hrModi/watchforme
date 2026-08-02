@@ -5,7 +5,9 @@ import AdSlot from '@/components/AdSlot'
 import { getRegionRates, getHistoricalRates, getAllRegionRates } from '@/lib/rates'
 import { INDIA_CITIES, getCityBySlug } from '@/config/india-cities'
 
-export const runtime = 'edge'
+export async function generateStaticParams() {
+  return INDIA_CITIES.map(city => ({ city: city.slug }))
+}
 
 interface Props {
   params: Promise<{ city: string }>
