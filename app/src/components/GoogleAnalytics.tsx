@@ -2,7 +2,7 @@ import Script from 'next/script'
 
 export default function GoogleAnalytics() {
   const id = process.env.NEXT_PUBLIC_GA_ID
-  if (!id) return null
+  if (!id || process.env.NODE_ENV !== 'production') return null
 
   return (
     <>
