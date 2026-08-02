@@ -23,19 +23,12 @@ export default function WatcherCard({ watcher, liveRate, country = 'india' }: Wa
     >
       <div className="flex items-start justify-between">
         <span className="text-2xl" aria-hidden="true">{watcher.icon}</span>
-        {isLive ? (
+        {isLive && (
           <span
             className="text-xs font-semibold px-2 py-0.5 rounded-full"
             style={{ backgroundColor: 'var(--accent-subtle)', color: 'var(--accent)' }}
           >
             Live
-          </span>
-        ) : (
-          <span
-            className="text-xs font-medium px-2 py-0.5 rounded-full"
-            style={{ backgroundColor: 'var(--surface-2)', color: 'var(--text-faint)' }}
-          >
-            Coming soon
           </span>
         )}
       </div>

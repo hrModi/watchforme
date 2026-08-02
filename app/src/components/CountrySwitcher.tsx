@@ -34,14 +34,19 @@ export default function CountrySwitcher({ initialCountry = 'US' }: CountrySwitch
   const [open, setOpen] = useState(false)
   const [current, setCurrent] = useState<string>(initialCountry)
 
+  function persistCountry(code: string) {
+    localStorage.setItem(STORAGE_KEY, code)
+    document.cookie = `watcher_country=${code}; path=/; max-age=31536000; SameSite=Lax`
+  }
+
   useEffect(() => {
     // Sync switcher to whatever country the current page is actually showing
     if (/\/india(\/|$)/.test(pathname)) {
       setCurrent('IN')
-      localStorage.setItem(STORAGE_KEY, 'IN')
+      persistCountry('IN')
     } else if (/\/us(\/|$)/.test(pathname)) {
       setCurrent('US')
-      localStorage.setItem(STORAGE_KEY, 'US')
+      persistCountry('US')
     } else {
       // On neutral pages: prefer localStorage, then fall back to server-detected country
       const stored = localStorage.getItem(STORAGE_KEY)
@@ -53,7 +58,7 @@ export default function CountrySwitcher({ initialCountry = 'US' }: CountrySwitch
   function handleSelect(code: string) {
     setOpen(false)
     if (code === current) return
-    localStorage.setItem(STORAGE_KEY, code)
+    persistCountry(code)
     setCurrent(code)
     router.push(getEquivalentPath(pathname, code))
   }

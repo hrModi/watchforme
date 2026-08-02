@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { headers } from 'next/headers'
+import { headers, cookies } from 'next/headers'
 
 export const runtime = 'edge'
 
@@ -15,9 +15,10 @@ export const metadata: Metadata = {
 }
 
 export default async function HomePage() {
-  const headersList = await headers()
+  const [headersList, cookiesList] = await Promise.all([headers(), cookies()])
+  const cookieCountry = cookiesList.get('watcher_country')?.value
   const cfCountry = headersList.get('CF-IPCountry')
-  const isIndia = cfCountry === 'IN'
+  const isIndia = cookieCountry === 'IN' || (!cookieCountry && cfCountry === 'IN')
   const country = isIndia ? 'india' : 'us'
   const countryCode = isIndia ? 'IN' : 'US'
 
