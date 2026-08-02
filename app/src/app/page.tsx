@@ -1,4 +1,7 @@
 import type { Metadata } from 'next'
+
+export const runtime = 'edge'
+
 import WatcherCard from '@/components/WatcherCard'
 import { WATCHERS } from '@/config/watchers'
 import { getLatestRate } from '@/lib/rates'

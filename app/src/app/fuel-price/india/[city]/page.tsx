@@ -5,6 +5,7 @@ import AdSlot from '@/components/AdSlot'
 import { getRegionRates, getHistoricalRates, getAllRegionRates } from '@/lib/rates'
 import { INDIA_CITIES, getCityBySlug } from '@/config/india-cities'
 
+export const runtime = 'edge'
 export const revalidate = 3600
 
 export async function generateStaticParams() {

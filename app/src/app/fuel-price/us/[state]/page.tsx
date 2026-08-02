@@ -5,6 +5,7 @@ import AdSlot from '@/components/AdSlot'
 import { getRegionRates, getHistoricalRates, getAllRegionRates } from '@/lib/rates'
 import { US_STATES, getStateBySlug } from '@/config/us-states'
 
+export const runtime = 'edge'
 export const revalidate = 3600
 
 export async function generateStaticParams() {

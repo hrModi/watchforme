@@ -1,4 +1,7 @@
 import type { Metadata } from 'next'
+
+export const runtime = 'edge'
+
 import FuelSearch from '@/components/FuelSearch'
 import PriceCard from '@/components/PriceCard'
 import AdSlot from '@/components/AdSlot'
