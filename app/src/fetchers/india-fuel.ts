@@ -97,7 +97,7 @@ export async function runIndiaFuelFetcher(): Promise<{ success: number; failed: 
 
   if (error) {
     console.error(JSON.stringify({ event: 'india_fetcher_db_error', error: error.message }))
-    return { success: 0, failed: rows.length }
+    return { success: 0, failed: rows.length, dbError: error.message } as never
   }
 
   const citiesSucceeded = petrolValues.length

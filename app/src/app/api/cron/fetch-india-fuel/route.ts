@@ -11,5 +11,5 @@ export async function POST(request: NextRequest) {
   }
 
   const result = await runIndiaFuelFetcher()
-  return NextResponse.json(result)
+  return NextResponse.json({ ...result, env: { hasServiceKey: !!process.env.SUPABASE_SERVICE_ROLE_KEY, keyPrefix: process.env.SUPABASE_SERVICE_ROLE_KEY?.slice(0, 12) } })
 }
