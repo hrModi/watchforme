@@ -15,23 +15,12 @@ export default function WatcherCard({ watcher, liveRate, country = 'india' }: Wa
     <div
       className="rounded-xl border p-5 h-full flex flex-col gap-3 transition-shadow"
       style={{
-        backgroundColor: isLive ? 'var(--surface)' : 'var(--surface-2)',
+        backgroundColor: 'var(--surface)',
         borderColor: 'var(--border)',
-        borderStyle: isLive ? 'solid' : 'dashed',
-        boxShadow: isLive ? 'var(--shadow-sm)' : 'none',
+        boxShadow: 'var(--shadow-sm)',
       }}
     >
-      <div className="flex items-start justify-between">
-        <span className="text-2xl" aria-hidden="true">{watcher.icon}</span>
-        {isLive && (
-          <span
-            className="text-xs font-semibold px-2 py-0.5 rounded-full"
-            style={{ backgroundColor: 'var(--accent-subtle)', color: 'var(--accent)' }}
-          >
-            Live
-          </span>
-        )}
-      </div>
+      <span className="text-2xl" aria-hidden="true">{watcher.icon}</span>
 
       <div>
         <h3 className="font-semibold text-sm" style={{ color: 'var(--text)' }}>
@@ -54,18 +43,6 @@ export default function WatcherCard({ watcher, liveRate, country = 'india' }: Wa
             {liveRate.unit.startsWith('₹') ? '₹' : '$'}{liveRate.value.toFixed(2)}
             <span className="text-sm font-normal ml-1" style={{ color: 'var(--text-muted)' }}>{liveRate.unit}</span>
           </p>
-        </div>
-      )}
-
-      {isLive && !liveRate && (
-        <div className="mt-auto pt-3 border-t" style={{ borderColor: 'var(--border)' }}>
-          <p className="text-xs" style={{ color: 'var(--text-muted)' }}>View all prices →</p>
-        </div>
-      )}
-
-      {!isLive && (
-        <div className="mt-auto pt-3 border-t" style={{ borderColor: 'var(--border)' }}>
-          <p className="text-xs" style={{ color: 'var(--text-faint)' }}>Show interest →</p>
         </div>
       )}
     </div>
