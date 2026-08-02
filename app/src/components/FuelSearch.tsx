@@ -74,29 +74,34 @@ export default function FuelSearch({ items, basePath, fuelTypes, popularItems }:
   return (
     <div>
       <div
-        className="flex flex-wrap gap-3 items-end rounded-xl p-3 sm:p-4"
+        className="flex flex-col sm:flex-row sm:flex-wrap gap-3 sm:items-end rounded-xl p-3 sm:p-4"
         style={{ backgroundColor: 'var(--surface)', border: '1px solid var(--border)' }}
       >
         {/* State filter (India only) */}
         {hasStates && (
-          <div className="flex flex-col gap-1 w-full sm:w-auto">
+          <div className="flex flex-col gap-1">
             <label className="text-xs font-semibold tracking-wider uppercase" style={{ color: 'var(--text-muted)' }}>
               State
             </label>
-            <select
-              value={selectedState}
-              onChange={e => { setSelectedState(e.target.value); setQuery(''); setSelectedSlug('') }}
-              className="text-sm rounded-lg px-3 py-2.5 w-full sm:min-w-[160px] sm:w-auto"
-              style={{ backgroundColor: 'var(--surface-2)', color: 'var(--text)', ...inputBorder }}
-            >
-              <option value="">All states</option>
-              {allStates.map(s => <option key={s} value={s}>{s}</option>)}
-            </select>
+            <div className="relative">
+              <select
+                value={selectedState}
+                onChange={e => { setSelectedState(e.target.value); setQuery(''); setSelectedSlug('') }}
+                className="text-sm rounded-lg px-3 py-2.5 pr-8 sm:min-w-[160px] w-full appearance-none"
+                style={{ backgroundColor: 'var(--surface-2)', color: 'var(--text)', ...inputBorder }}
+              >
+                <option value="">All states</option>
+                {allStates.map(s => <option key={s} value={s}>{s}</option>)}
+              </select>
+              <svg className="absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" width="12" height="12" viewBox="0 0 12 12" fill="none">
+                <path d="M2 4l4 4 4-4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{ color: 'var(--text-faint)' }}/>
+              </svg>
+            </div>
           </div>
         )}
 
         {/* City / state text input */}
-        <div className="flex flex-col gap-1 flex-1 min-w-[160px] w-full sm:w-auto" ref={wrapperRef} style={{ position: 'relative' }}>
+        <div className="flex flex-col gap-1 sm:flex-1 sm:min-w-[160px]" ref={wrapperRef} style={{ position: 'relative' }}>
           <label className="text-xs font-semibold tracking-wider uppercase" style={{ color: 'var(--text-muted)' }}>
             {hasStates ? 'City' : 'State'}
           </label>
@@ -153,7 +158,7 @@ export default function FuelSearch({ items, basePath, fuelTypes, popularItems }:
           type="button"
           onClick={handleCheckPrice}
           disabled={!selectedSlug}
-          className="text-sm font-semibold px-5 py-2.5 rounded-lg transition-opacity disabled:opacity-40 w-full sm:w-auto"
+          className="text-sm font-semibold px-5 py-2.5 rounded-lg transition-opacity disabled:opacity-40 sm:w-auto"
           style={{ backgroundColor: 'var(--accent)', color: '#fff', whiteSpace: 'nowrap' }}
         >
           Check Price →
