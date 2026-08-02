@@ -79,14 +79,14 @@ export default function FuelSearch({ items, basePath, fuelTypes, popularItems }:
       >
         {/* State filter (India only) */}
         {hasStates && (
-          <div className="flex flex-col gap-1">
+          <div className="flex flex-col gap-1 w-full sm:w-auto">
             <label className="text-xs font-semibold tracking-wider uppercase" style={{ color: 'var(--text-muted)' }}>
               State
             </label>
             <select
               value={selectedState}
               onChange={e => { setSelectedState(e.target.value); setQuery(''); setSelectedSlug('') }}
-              className="text-sm rounded-lg px-3 py-2.5 min-w-[160px]"
+              className="text-sm rounded-lg px-3 py-2.5 w-full sm:min-w-[160px] sm:w-auto"
               style={{ backgroundColor: 'var(--surface-2)', color: 'var(--text)', ...inputBorder }}
             >
               <option value="">All states</option>
@@ -96,7 +96,7 @@ export default function FuelSearch({ items, basePath, fuelTypes, popularItems }:
         )}
 
         {/* City / state text input */}
-        <div className="flex flex-col gap-1 flex-1 min-w-[160px]" ref={wrapperRef} style={{ position: 'relative' }}>
+        <div className="flex flex-col gap-1 flex-1 min-w-[160px] w-full sm:w-auto" ref={wrapperRef} style={{ position: 'relative' }}>
           <label className="text-xs font-semibold tracking-wider uppercase" style={{ color: 'var(--text-muted)' }}>
             {hasStates ? 'City' : 'State'}
           </label>
@@ -153,7 +153,7 @@ export default function FuelSearch({ items, basePath, fuelTypes, popularItems }:
           type="button"
           onClick={handleCheckPrice}
           disabled={!selectedSlug}
-          className="text-sm font-semibold px-5 py-2.5 rounded-lg transition-opacity disabled:opacity-40"
+          className="text-sm font-semibold px-5 py-2.5 rounded-lg transition-opacity disabled:opacity-40 w-full sm:w-auto"
           style={{ backgroundColor: 'var(--accent)', color: '#fff', whiteSpace: 'nowrap' }}
         >
           Check Price →
