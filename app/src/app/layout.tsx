@@ -64,7 +64,18 @@ export default function RootLayout({
               <span style={{ margin: '0 6px', opacity: 0.35 }}>·</span>
               <span>Free forever · No signup required</span>
             </span>
-            <a href="/privacy" style={{ color: 'var(--text-muted)' }}>Privacy</a>
+            <nav className="flex items-center gap-4">
+              {(['About', 'Privacy', 'Terms', 'Contact'] as const).map(label => (
+                <a
+                  key={label}
+                  href={`/${label.toLowerCase()}`}
+                  style={{ color: 'var(--text-muted)' }}
+                  className="hover:underline"
+                >
+                  {label}
+                </a>
+              ))}
+            </nav>
           </div>
         </footer>
       </body>
