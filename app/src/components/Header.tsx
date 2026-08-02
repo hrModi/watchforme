@@ -1,7 +1,14 @@
 import Link from 'next/link'
+import { headers } from 'next/headers'
 import CountrySwitcher from './CountrySwitcher'
 
-export default function Header() {
+function detectCountry(cfCountry: string | null): 'IN' | 'US' {
+  return cfCountry === 'IN' ? 'IN' : 'US'
+}
+
+export default async function Header() {
+  const headersList = await headers()
+  const initialCountry = detectCountry(headersList.get('CF-IPCountry'))
   return (
     <header
       className="sticky top-0 z-50 border-b"
@@ -38,7 +45,7 @@ export default function Header() {
           </span>
         </Link>
 
-        <CountrySwitcher />
+        <CountrySwitcher initialCountry={initialCountry} />
       </div>
     </header>
   )

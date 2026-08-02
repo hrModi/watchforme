@@ -10,6 +10,10 @@ const COUNTRIES = [
 
 const STORAGE_KEY = 'watcher_country'
 
+interface CountrySwitcherProps {
+  initialCountry?: 'IN' | 'US'
+}
+
 function getEquivalentPath(currentPath: string, targetCountry: string): string {
   // /fuel-price/india/mumbai → /fuel-price/us (no city-level match cross-country)
   // /fuel-price/india → /fuel-price/us
@@ -24,11 +28,11 @@ function getEquivalentPath(currentPath: string, targetCountry: string): string {
   return currentPath
 }
 
-export default function CountrySwitcher() {
+export default function CountrySwitcher({ initialCountry = 'US' }: CountrySwitcherProps) {
   const router = useRouter()
   const pathname = usePathname()
   const [open, setOpen] = useState(false)
-  const [current, setCurrent] = useState<string>('IN')
+  const [current, setCurrent] = useState<string>(initialCountry)
 
   useEffect(() => {
     // Sync switcher to whatever country the current page is actually showing
@@ -39,10 +43,12 @@ export default function CountrySwitcher() {
       setCurrent('US')
       localStorage.setItem(STORAGE_KEY, 'US')
     } else {
+      // On neutral pages: prefer localStorage, then fall back to server-detected country
       const stored = localStorage.getItem(STORAGE_KEY)
       if (stored) setCurrent(stored)
+      else setCurrent(initialCountry)
     }
-  }, [pathname])
+  }, [pathname, initialCountry])
 
   function handleSelect(code: string) {
     setOpen(false)

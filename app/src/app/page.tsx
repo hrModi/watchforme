@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { headers } from 'next/headers'
 
 export const runtime = 'edge'
 
@@ -14,7 +15,17 @@ export const metadata: Metadata = {
 }
 
 export default async function HomePage() {
-  const liveRate = await getLatestRate('fuel', 'IN', 'petrol', null).catch(() => null)
+  const headersList = await headers()
+  const cfCountry = headersList.get('CF-IPCountry')
+  const isIndia = cfCountry === 'IN'
+  const country = isIndia ? 'india' : 'us'
+
+  const liveRate = await getLatestRate(
+    'fuel',
+    isIndia ? 'IN' : 'US',
+    isIndia ? 'petrol' : 'gasoline',
+    null,
+  ).catch(() => null)
 
   return (
     <div className="max-w-6xl mx-auto px-4 sm:px-6 py-12">
@@ -41,7 +52,7 @@ export default async function HomePage() {
               key={watcher.watcher_type}
               watcher={watcher}
               liveRate={watcher.status === 'live' ? liveRate : undefined}
-              country="india"
+              country={country}
             />
           ))}
         </div>
