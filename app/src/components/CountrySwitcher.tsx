@@ -48,9 +48,11 @@ export default function CountrySwitcher({ initialCountry = 'US' }: CountrySwitch
       setCurrent('US')
       persistCountry('US')
     } else {
-      // On neutral pages: prefer localStorage, then fall back to server-detected country
-      const stored = localStorage.getItem(STORAGE_KEY)
-      if (stored) setCurrent(stored)
+      // On neutral pages: read from cookie (set by middleware/server) then localStorage
+      const cookieMatch = document.cookie.match(/watcher_country=([^;]+)/)
+      const cookieVal = cookieMatch?.[1]
+      const stored = cookieVal || localStorage.getItem(STORAGE_KEY)
+      if (stored === 'IN' || stored === 'US') setCurrent(stored)
       else setCurrent(initialCountry)
     }
   }, [pathname, initialCountry])
