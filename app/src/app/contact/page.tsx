@@ -3,6 +3,7 @@ import type { Metadata } from 'next'
 export const metadata: Metadata = {
   title: { absolute: 'Contact | WatchForMe' },
   description: "Have feedback, found a bug, or have an idea for a new watcher? We'd love to hear from you.",
+  alternates: { canonical: '/contact' },
 }
 
 export default function ContactPage() {

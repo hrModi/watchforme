@@ -3,6 +3,7 @@ import type { Metadata } from 'next'
 export const metadata: Metadata = {
   title: { absolute: 'Privacy Policy | WatchForMe' },
   description: 'WatchForMe is built with privacy in mind. We collect only what we need to send your alert. Nothing more.',
+  alternates: { canonical: '/privacy' },
 }
 
 const sections = [

@@ -46,6 +46,21 @@ export default function RootLayout({
     <html lang="en" className={`h-full ${spaceGrotesk.variable} ${inter.variable}`}>
       <body className="bg-page min-h-full flex flex-col antialiased">
         <GoogleAnalytics />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              '@context': 'https://schema.org',
+              '@type': 'Organization',
+              name: 'WatchForMe',
+              url: 'https://watchforme.me',
+              logo: 'https://watchforme.me/icon.svg',
+              description: 'Free price alert service for fuel, gold, currency, and more. No signup required.',
+              email: 'support@watchforme.me',
+              foundingDate: '2024',
+            }),
+          }}
+        />
         <Header />
         <main id="main-content" className="flex-1">
           {children}

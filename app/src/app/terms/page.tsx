@@ -3,6 +3,7 @@ import type { Metadata } from 'next'
 export const metadata: Metadata = {
   title: { absolute: 'Terms of Service | WatchForMe' },
   description: 'Simple terms for a simple service. WatchForMe is free, informational, and built to be fair.',
+  alternates: { canonical: '/terms' },
 }
 
 const sections = [

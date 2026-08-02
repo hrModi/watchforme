@@ -27,5 +27,9 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${BASE}/fuel-price/us`, lastModified: now, changeFrequency: 'daily', priority: 0.9 },
     ...cityUrls,
     ...stateUrls,
+    { url: `${BASE}/about`, lastModified: now, changeFrequency: 'monthly', priority: 0.5 },
+    { url: `${BASE}/privacy`, lastModified: now, changeFrequency: 'monthly', priority: 0.3 },
+    { url: `${BASE}/terms`, lastModified: now, changeFrequency: 'monthly', priority: 0.3 },
+    { url: `${BASE}/contact`, lastModified: now, changeFrequency: 'monthly', priority: 0.4 },
   ]
 }
