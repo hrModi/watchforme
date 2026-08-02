@@ -22,16 +22,16 @@ export default {
     const results = []
 
     if (hour === 6) {
-      // 06:00 UTC — fetch India fuel (11:30 IST), then check alerts
-      const fetch = await callEndpoint(env, '/api/cron/fetch-india-fuel')
-      results.push(fetch)
-      if (fetch.ok) {
-        results.push(await callEndpoint(env, '/api/cron/check-alerts'))
+      // 06:00 UTC — fetch India fuel (11:30 IST) split by fuel type to stay
+      // under Cloudflare's 50 subrequest/invocation limit (39 cities × 1 fuel + DB = 41)
+      for (const fuel of ['petrol', 'diesel', 'cng']) {
+        results.push(await callEndpoint(env, `/api/cron/fetch-india-fuel?fuel=${fuel}`))
       }
+      results.push(await callEndpoint(env, '/api/cron/check-alerts'))
     }
 
     if (hour === 14) {
-      // 14:00 UTC — fetch US fuel (09:00 ET), then check alerts
+      // 14:00 UTC — fetch US fuel (09:00 ET) — single AAA page fetch, no batching needed
       const fetch = await callEndpoint(env, '/api/cron/fetch-us-fuel')
       results.push(fetch)
       if (fetch.ok) {
