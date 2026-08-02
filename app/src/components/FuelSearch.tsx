@@ -87,8 +87,8 @@ export default function FuelSearch({ items, basePath, fuelTypes, popularItems }:
               <select
                 value={selectedState}
                 onChange={e => { setSelectedState(e.target.value); setQuery(''); setSelectedSlug('') }}
-                className="text-sm rounded-lg px-3 py-2.5 pr-8 sm:min-w-[160px] w-full appearance-none"
-                style={{ backgroundColor: 'var(--surface-2)', color: 'var(--text)', ...inputBorder }}
+                className="text-sm rounded-lg px-3 pr-8 sm:min-w-[160px] w-full"
+                style={{ backgroundColor: 'var(--surface-2)', color: 'var(--text)', WebkitAppearance: 'none', appearance: 'none', height: '42px', ...inputBorder }}
               >
                 <option value="">All states</option>
                 {allStates.map(s => <option key={s} value={s}>{s}</option>)}
@@ -111,8 +111,8 @@ export default function FuelSearch({ items, basePath, fuelTypes, popularItems }:
             onChange={e => { setQuery(e.target.value); setSelectedSlug(''); setOpen(true) }}
             onFocus={() => query && setOpen(true)}
             placeholder={hasStates ? 'e.g. Mumbai' : 'e.g. California'}
-            className="text-sm rounded-lg px-3 py-2.5"
-            style={{ backgroundColor: 'var(--surface-2)', color: 'var(--text)', ...inputBorder }}
+            className="text-sm rounded-lg px-3"
+            style={{ backgroundColor: 'var(--surface-2)', color: 'var(--text)', height: '42px', ...inputBorder }}
             autoComplete="off"
           />
           {open && suggestions.length > 0 && (
