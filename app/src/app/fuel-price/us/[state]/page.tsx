@@ -6,11 +6,6 @@ import { getRegionRates, getHistoricalRates, getAllRegionRates } from '@/lib/rat
 import { US_STATES, getStateBySlug } from '@/config/us-states'
 
 export const runtime = 'edge'
-export const revalidate = 3600
-
-export async function generateStaticParams() {
-  return US_STATES.map(state => ({ state: state.slug }))
-}
 
 interface Props {
   params: Promise<{ state: string }>
