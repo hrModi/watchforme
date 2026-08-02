@@ -26,18 +26,36 @@ export default async function HomePage() {
   return (
     <div className="max-w-6xl mx-auto px-4 sm:px-6 py-12">
       {/* Value prop */}
-      <section className="mb-12" aria-labelledby="hero-heading">
+      <section className="mb-10" aria-labelledby="hero-heading">
         <h1
           id="hero-heading"
           className="text-3xl sm:text-4xl font-bold tracking-tight mb-3"
           style={{ color: 'var(--text)' }}
         >
-          Price watchers. Free forever.
+          Never check prices again.
         </h1>
         <p className="text-base max-w-xl" style={{ color: 'var(--text-muted)' }}>
-          Get notified when fuel prices, gold rates, or currency rates move. By email or WhatsApp.
-          No account, no password. Just set a threshold and we&apos;ll ping you.
+          Get notified when fuel prices, gold rates, stock prices, or exchange rates cross your target.
+          No signup. No password. Free forever.
         </p>
+
+        {/* Trust badges */}
+        <div className="flex flex-wrap gap-x-5 gap-y-2 mt-5">
+          {[
+            'Free Forever',
+            'No Signup',
+            'Privacy Friendly',
+            'Email & WhatsApp Alerts',
+          ].map(badge => (
+            <span key={badge} className="flex items-center gap-1.5 text-sm" style={{ color: 'var(--text-muted)' }}>
+              <svg width="15" height="15" viewBox="0 0 15 15" fill="none" aria-hidden="true">
+                <circle cx="7.5" cy="7.5" r="7.5" fill="var(--accent)" opacity="0.15" />
+                <path d="M4.5 7.5l2 2 4-4" stroke="var(--accent)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+              {badge}
+            </span>
+          ))}
+        </div>
       </section>
 
       {/* Watcher card grid */}
