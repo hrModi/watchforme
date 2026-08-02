@@ -98,7 +98,7 @@ export default function CityFuelView({
           </p>
 
           {/* Fuel type tabs */}
-          <div className="flex gap-1 mb-5">
+          <div className="flex flex-wrap gap-1 mb-5">
             {fuels.map(fuel => {
               const isActive = fuel.subtype === activeSubtype
               const isSoon = fuel.status === 'coming_soon'

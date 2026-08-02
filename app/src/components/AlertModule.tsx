@@ -213,7 +213,7 @@ export default function AlertModule({
           </div>
 
           {/* Contact */}
-          <div className="flex flex-col gap-1 flex-1 min-w-[180px]">
+          <div className="flex flex-col gap-1 flex-1 min-w-[160px] w-full">
             <label className="text-xs" style={{ color: 'var(--text-muted)' }}>
               {channel === 'email' ? 'Email address' : 'Phone (with country code)'}
             </label>
@@ -230,7 +230,7 @@ export default function AlertModule({
           </div>
         </div>
 
-        <div className="flex items-center gap-4 mt-4">
+        <div className="flex flex-wrap items-center gap-x-4 gap-y-2 mt-4">
           <button
             type="submit"
             disabled={formState === 'loading'}
