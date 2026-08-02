@@ -23,12 +23,18 @@ export interface NearbyItem {
   unit: string
 }
 
+export interface FAQ {
+  q: string
+  a: string
+}
+
 interface CityFuelViewProps {
   fuels: FuelData[]
   unit: string
   country: Country
   region: string
   locationName: string
+  pageHeading?: string
   backHref: string
   backLabel: string
   nearbyItems: NearbyItem[]
@@ -37,6 +43,7 @@ interface CityFuelViewProps {
   nearbyHeading: string
   aboutHeading: string
   aboutParagraphs: string[]
+  faqs?: FAQ[]
 }
 
 function formatTimestamp(iso: string): string {
@@ -54,6 +61,7 @@ export default function CityFuelView({
   country,
   region,
   locationName,
+  pageHeading,
   backHref,
   backLabel,
   nearbyItems,
@@ -62,6 +70,7 @@ export default function CityFuelView({
   nearbyHeading,
   aboutHeading,
   aboutParagraphs,
+  faqs,
 }: CityFuelViewProps) {
   const firstLive = fuels.find(f => f.status !== 'coming_soon') ?? fuels[0]
   const [activeSubtype, setActiveSubtype] = useState(firstLive.subtype)
@@ -93,6 +102,11 @@ export default function CityFuelView({
         style={{ borderBottom: '1px solid var(--border)', backgroundColor: 'var(--surface)' }}
       >
         <div className="max-w-6xl mx-auto">
+          {pageHeading && (
+            <h1 className="text-2xl sm:text-3xl font-bold tracking-tight mb-1" style={{ color: 'var(--text)' }}>
+              {pageHeading}
+            </h1>
+          )}
           <p className="text-sm mb-3" style={{ color: 'var(--text-muted)' }}>
             {locationName}
           </p>
@@ -149,6 +163,16 @@ export default function CityFuelView({
               <p className="text-xs mt-2" style={{ color: 'var(--text-muted)' }}>
                 Last updated: {formatTimestamp(active.rate.fetched_at)}
               </p>
+              {active.rate.trend !== 'flat' && (
+                <p className="text-xs mt-1.5 flex flex-wrap items-center gap-x-2 gap-y-1" style={{ color: 'var(--text-faint)' }}>
+                  <span>Yesterday: {sym}{(active.rate.value - active.rate.delta).toFixed(2)}</span>
+                  <span aria-hidden="true">→</span>
+                  <span>Today: {sym}{active.rate.value.toFixed(2)}</span>
+                  <span style={{ color: active.rate.trend === 'up' ? '#dc2626' : '#16a34a', fontWeight: 600 }}>
+                    {active.rate.trend === 'up' ? '↑' : '↓'} {active.rate.delta > 0 ? '+' : ''}{active.rate.delta.toFixed(2)}
+                  </span>
+                </p>
+              )}
             </div>
           ) : (
             <p className="text-3xl font-bold" style={{ color: 'var(--text-muted)' }}>
@@ -189,6 +213,40 @@ export default function CityFuelView({
                 </p>
               ))}
             </section>
+
+            {faqs && faqs.length > 0 && (
+              <section aria-labelledby="faq-heading">
+                <h2 id="faq-heading" className="text-base font-semibold mb-3" style={{ color: 'var(--text)' }}>
+                  Frequently Asked Questions
+                </h2>
+                <div className="space-y-2">
+                  {faqs.map((faq, i) => (
+                    <details
+                      key={i}
+                      className="rounded-lg border px-4 py-3 text-sm group"
+                      style={{ borderColor: 'var(--border)', backgroundColor: 'var(--surface)' }}
+                    >
+                      <summary
+                        className="font-medium cursor-pointer list-none flex items-center justify-between"
+                        style={{ color: 'var(--text)' }}
+                      >
+                        {faq.q}
+                        <svg
+                          width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"
+                          className="shrink-0 ml-2 transition-transform group-open:rotate-180"
+                          style={{ color: 'var(--text-faint)' }}
+                        >
+                          <path d="M2 5l5 5 5-5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                        </svg>
+                      </summary>
+                      <p className="mt-2 leading-relaxed" style={{ color: 'var(--text-muted)' }}>
+                        {faq.a}
+                      </p>
+                    </details>
+                  ))}
+                </div>
+              </section>
+            )}
           </div>
 
           {/* Sidebar */}

@@ -1,19 +1,21 @@
 'use client'
 
+import { useState } from 'react'
+
 interface DataPoint {
   value: number
   fetched_at: string
 }
 
 interface PriceTrendChartProps {
-  history: DataPoint[]    // single fuel's history
+  history: DataPoint[]
   unit: string
   label: string
 }
 
 const W = 600
 const H = 180
-const PAD = { top: 16, right: 16, bottom: 40, left: 56 }
+const PAD = { top: 16, right: 16, bottom: 40, left: 64 }
 const innerW = W - PAD.left - PAD.right
 const innerH = H - PAD.top - PAD.bottom
 
@@ -21,7 +23,20 @@ function shortDate(iso: string) {
   return new Date(iso).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })
 }
 
+function fullDate(iso: string) {
+  return new Date(iso).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })
+}
+
+interface TooltipState {
+  x: number
+  y: number
+  value: number
+  date: string
+}
+
 export default function PriceTrendChart({ history, unit, label }: PriceTrendChartProps) {
+  const [tooltip, setTooltip] = useState<TooltipState | null>(null)
+
   if (history.length < 2) {
     return (
       <section>
@@ -84,6 +99,16 @@ export default function PriceTrendChart({ history, unit, label }: PriceTrendChar
 
   const last = history[history.length - 1]
 
+  // Tooltip box: keep it within chart bounds
+  const TOOLTIP_W = 90
+  const TOOLTIP_H = 44
+  const tooltipX = tooltip
+    ? Math.max(PAD.left, Math.min(tooltip.x - TOOLTIP_W / 2, W - PAD.right - TOOLTIP_W))
+    : 0
+  const tooltipY = tooltip
+    ? Math.max(PAD.top, tooltip.y - TOOLTIP_H - 10)
+    : 0
+
   return (
     <section>
       <h2 className="text-base font-semibold mb-3" style={{ color: 'var(--text)' }}>
@@ -100,6 +125,7 @@ export default function PriceTrendChart({ history, unit, label }: PriceTrendChar
             width="100%"
             style={{ minWidth: '280px', display: 'block' }}
             aria-label={`${label} price trend chart`}
+            onMouseLeave={() => setTooltip(null)}
           >
             {/* Grid lines + Y labels */}
             {yTicks.map((tick, i) => {
@@ -108,7 +134,7 @@ export default function PriceTrendChart({ history, unit, label }: PriceTrendChar
                 <g key={i}>
                   <line x1={PAD.left} y1={y} x2={W - PAD.right} y2={y} stroke="var(--border)" strokeWidth="0.5" />
                   <text x={PAD.left - 6} y={y + 4} textAnchor="end" fontSize="10" fill="var(--text-faint)">
-                    {sym}{tick.toFixed(0)}
+                    {sym}{tick.toFixed(2)}
                   </text>
                 </g>
               )
@@ -130,8 +156,55 @@ export default function PriceTrendChart({ history, unit, label }: PriceTrendChar
             {/* Line */}
             <polyline points={polylinePoints} fill="none" stroke="var(--accent)" strokeWidth="2" strokeLinejoin="round" />
 
-            {/* Latest dot */}
-            <circle cx={xAt(last.fetched_at)} cy={yAt(last.value)} r="3.5" fill="var(--accent)" />
+            {/* Hover hit targets — invisible circles at each data point */}
+            {history.map((d, i) => (
+              <circle
+                key={i}
+                cx={xAt(d.fetched_at)}
+                cy={yAt(d.value)}
+                r="12"
+                fill="transparent"
+                style={{ cursor: 'crosshair' }}
+                onMouseEnter={() => setTooltip({ x: xAt(d.fetched_at), y: yAt(d.value), value: d.value, date: d.fetched_at })}
+              />
+            ))}
+
+            {/* Tooltip */}
+            {tooltip && (
+              <g>
+                <line
+                  x1={tooltip.x} y1={PAD.top}
+                  x2={tooltip.x} y2={PAD.top + innerH}
+                  stroke="var(--accent)" strokeWidth="1" strokeDasharray="3 2" opacity="0.4"
+                />
+                <circle cx={tooltip.x} cy={tooltip.y} r="4.5" fill="var(--accent)" />
+                <rect
+                  x={tooltipX} y={tooltipY}
+                  width={TOOLTIP_W} height={TOOLTIP_H}
+                  rx="6"
+                  fill="var(--surface-2)"
+                  stroke="var(--border)"
+                  strokeWidth="1"
+                />
+                <text
+                  x={tooltipX + TOOLTIP_W / 2} y={tooltipY + 17}
+                  textAnchor="middle" fontSize="12" fontWeight="600" fill="var(--text)"
+                >
+                  {sym}{tooltip.value.toFixed(2)}
+                </text>
+                <text
+                  x={tooltipX + TOOLTIP_W / 2} y={tooltipY + 33}
+                  textAnchor="middle" fontSize="10" fill="var(--text-muted)"
+                >
+                  {fullDate(tooltip.date)}
+                </text>
+              </g>
+            )}
+
+            {/* Latest dot (shown when no tooltip active) */}
+            {!tooltip && (
+              <circle cx={xAt(last.fetched_at)} cy={yAt(last.value)} r="3.5" fill="var(--accent)" />
+            )}
           </svg>
         </div>
       </div>
