@@ -5,7 +5,6 @@ export const runtime = 'edge'
 
 import WatcherCard from '@/components/WatcherCard'
 import { WATCHERS } from '@/config/watchers'
-import { getLatestRate } from '@/lib/rates'
 
 export const revalidate = 3600
 
@@ -23,13 +22,6 @@ export default async function HomePage() {
   const countryCode = isIndia ? 'IN' : 'US'
 
   const visibleWatchers = WATCHERS.filter(w => w.countries.includes(countryCode))
-
-  const liveRate = await getLatestRate(
-    'fuel',
-    isIndia ? 'IN' : 'US',
-    isIndia ? 'petrol' : 'gasoline',
-    null,
-  ).catch(() => null)
 
   return (
     <div className="max-w-6xl mx-auto px-4 sm:px-6 py-12">
@@ -55,7 +47,6 @@ export default async function HomePage() {
             <WatcherCard
               key={watcher.watcher_type}
               watcher={watcher}
-              liveRate={watcher.status === 'live' ? liveRate : undefined}
               country={country}
             />
           ))}
