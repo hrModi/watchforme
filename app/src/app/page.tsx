@@ -19,6 +19,9 @@ export default async function HomePage() {
   const cfCountry = headersList.get('CF-IPCountry')
   const isIndia = cfCountry === 'IN'
   const country = isIndia ? 'india' : 'us'
+  const countryCode = isIndia ? 'IN' : 'US'
+
+  const visibleWatchers = WATCHERS.filter(w => w.countries.includes(countryCode))
 
   const liveRate = await getLatestRate(
     'fuel',
@@ -47,7 +50,7 @@ export default async function HomePage() {
       {/* Watcher card grid */}
       <section aria-label="Available watchers">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {WATCHERS.map(watcher => (
+          {visibleWatchers.map(watcher => (
             <WatcherCard
               key={watcher.watcher_type}
               watcher={watcher}

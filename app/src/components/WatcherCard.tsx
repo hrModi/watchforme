@@ -15,9 +15,9 @@ export default function WatcherCard({ watcher, liveRate, country = 'india' }: Wa
     <div
       className="rounded-xl border p-5 h-full flex flex-col gap-3 transition-shadow"
       style={{
-        backgroundColor: 'var(--surface)',
+        backgroundColor: isLive ? 'var(--surface)' : 'var(--surface-2)',
         borderColor: 'var(--border)',
-        opacity: isLive ? 1 : 0.55,
+        borderStyle: isLive ? 'solid' : 'dashed',
         boxShadow: isLive ? 'var(--shadow-sm)' : 'none',
       }}
     >
@@ -69,11 +69,21 @@ export default function WatcherCard({ watcher, liveRate, country = 'india' }: Wa
           <p className="text-xs" style={{ color: 'var(--text-muted)' }}>View all prices →</p>
         </div>
       )}
+
+      {!isLive && (
+        <div className="mt-auto pt-3 border-t" style={{ borderColor: 'var(--border)' }}>
+          <p className="text-xs" style={{ color: 'var(--text-faint)' }}>Show interest →</p>
+        </div>
+      )}
     </div>
   )
 
   if (!isLive) {
-    return <div>{cardContent}</div>
+    return (
+      <Link href={`/coming-soon/${watcher.slug}`} className="block h-full hover:no-underline">
+        {cardContent}
+      </Link>
+    )
   }
 
   return (
