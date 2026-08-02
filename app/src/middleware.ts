@@ -7,16 +7,15 @@ export const config = {
 export function middleware(request: NextRequest) {
   const response = NextResponse.next()
 
-  // Only set the country cookie if the user hasn't explicitly chosen one
-  if (!request.cookies.get('watcher_country')) {
-    const cfCountry = request.headers.get('CF-IPCountry')
-    const country = cfCountry === 'IN' ? 'IN' : 'US'
-    response.cookies.set('watcher_country', country, {
-      path: '/',
-      maxAge: 60 * 60 * 24 * 365, // 1 year
-      sameSite: 'lax',
-    })
-  }
+  // Always write the IP-detected country so the client can read it without
+  // needing server-side headers. This never overrides the user's explicit preference.
+  const cfCountry = request.headers.get('CF-IPCountry')
+  response.cookies.set('country_auto', cfCountry === 'IN' ? 'IN' : 'US', {
+    path: '/',
+    maxAge: 60 * 60 * 24, // 24h — refreshed on every visit
+    sameSite: 'lax',
+    httpOnly: false,
+  })
 
   return response
 }

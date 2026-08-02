@@ -8,59 +8,47 @@ const COUNTRIES = [
   { code: 'US', label: 'United States', flag: '🇺🇸', live: true },
 ]
 
-const STORAGE_KEY = 'watcher_country'
-
-interface CountrySwitcherProps {
-  initialCountry?: 'IN' | 'US'
+function readCookie(name: string): string | undefined {
+  const match = document.cookie.match(new RegExp(`(?:^|; )${name}=([^;]*)`))
+  return match ? match[1] : undefined
 }
 
 function getEquivalentPath(currentPath: string, targetCountry: string): string {
-  // /fuel-price/india/mumbai → /fuel-price/us (no city-level match cross-country)
-  // /fuel-price/india → /fuel-price/us
-  // / → /
   const countrySlug = targetCountry === 'IN' ? 'india' : 'us'
   const match = currentPath.match(/^(\/[^/]+)\/[^/]+/)
-
-  if (match) {
-    // Has a watcher prefix — navigate to country root
-    return `${match[1]}/${countrySlug}`
-  }
+  if (match) return `${match[1]}/${countrySlug}`
   return currentPath
 }
 
-export default function CountrySwitcher({ initialCountry = 'US' }: CountrySwitcherProps) {
+export default function CountrySwitcher() {
   const router = useRouter()
   const pathname = usePathname()
   const [open, setOpen] = useState(false)
-  const [current, setCurrent] = useState<string>(initialCountry)
-
-  function persistCountry(code: string) {
-    localStorage.setItem(STORAGE_KEY, code)
-    document.cookie = `watcher_country=${code}; path=/; max-age=31536000; SameSite=Lax`
-  }
+  const [current, setCurrent] = useState<'IN' | 'US'>('US')
 
   useEffect(() => {
-    // Sync switcher to whatever country the current page is actually showing
+    // Sub-pages: always reflect the country the page belongs to — no saving
     if (/\/india(\/|$)/.test(pathname)) {
       setCurrent('IN')
-      persistCountry('IN')
-    } else if (/\/us(\/|$)/.test(pathname)) {
-      setCurrent('US')
-      persistCountry('US')
-    } else {
-      // On neutral pages: read from cookie (set by middleware/server) then localStorage
-      const cookieMatch = document.cookie.match(/watcher_country=([^;]+)/)
-      const cookieVal = cookieMatch?.[1]
-      const stored = cookieVal || localStorage.getItem(STORAGE_KEY)
-      if (stored === 'IN' || stored === 'US') setCurrent(stored)
-      else setCurrent(initialCountry)
+      return
     }
-  }, [pathname, initialCountry])
+    if (/\/us(\/|$)/.test(pathname)) {
+      setCurrent('US')
+      return
+    }
 
-  function handleSelect(code: string) {
+    // Homepage / neutral pages: explicit user preference → IP-detected → default US
+    const pref = readCookie('country_pref')
+    const auto = readCookie('country_auto')
+    const detected = pref || auto
+    setCurrent(detected === 'IN' ? 'IN' : 'US')
+  }, [pathname])
+
+  function handleSelect(code: 'IN' | 'US') {
     setOpen(false)
     if (code === current) return
-    persistCountry(code)
+    // Save as explicit user preference — persists across visits
+    document.cookie = `country_pref=${code}; path=/; max-age=31536000; SameSite=Lax`
     setCurrent(code)
     router.push(getEquivalentPath(pathname, code))
   }
@@ -100,7 +88,7 @@ export default function CountrySwitcher({ initialCountry = 'US' }: CountrySwitch
                 key={country.code}
                 role="option"
                 aria-selected={country.code === current}
-                onClick={() => handleSelect(country.code)}
+                onClick={() => handleSelect(country.code as 'IN' | 'US')}
                 className="flex items-center gap-2.5 px-3 py-2.5 text-sm cursor-pointer transition-colors"
                 style={{
                   backgroundColor: country.code === current ? 'var(--accent-subtle)' : undefined,
@@ -115,11 +103,6 @@ export default function CountrySwitcher({ initialCountry = 'US' }: CountrySwitch
               >
                 <span>{country.flag}</span>
                 <span>{country.label}</span>
-                {!country.live && (
-                  <span className="ml-auto text-xs px-1.5 py-0.5 rounded" style={{ backgroundColor: 'var(--surface-2)', color: 'var(--text-faint)' }}>
-                    Soon
-                  </span>
-                )}
               </li>
             ))}
           </ul>
