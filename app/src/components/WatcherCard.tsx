@@ -62,11 +62,11 @@ export default function WatcherCard({ watcher, country = 'india' }: WatcherCardP
         </Link>
       ) : (
         <Link
-          href={`/coming-soon/${watcher.slug}`}
+          href={`/${watcher.slug}`}
           className="mt-1 inline-flex items-center justify-center text-xs font-medium px-4 py-2 rounded-lg transition-opacity hover:opacity-80"
           style={{ backgroundColor: 'var(--surface-2)', color: 'var(--text-muted)', border: '1px solid var(--border)' }}
         >
-          Get Notified
+          Join Waitlist
         </Link>
       )}
     </div>

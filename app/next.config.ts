@@ -7,6 +7,15 @@ const nextConfig: NextConfig = {
   //
   // Static pages are pre-rendered at build time (generateStaticParams).
   // ISR revalidation is handled per-page via `export const revalidate`.
+  async redirects() {
+    return [
+      {
+        source: '/coming-soon/:slug',
+        destination: '/:slug',
+        permanent: true,
+      },
+    ]
+  },
 };
 
 export default nextConfig;
