@@ -5,7 +5,9 @@ import AdSlot from '@/components/AdSlot'
 import { getRegionRates, getHistoricalRates, getAllRegionRates } from '@/lib/rates'
 import { US_STATES, getStateBySlug } from '@/config/us-states'
 
-export const runtime = 'edge'
+export async function generateStaticParams() {
+  return US_STATES.map(state => ({ state: state.slug }))
+}
 
 interface Props {
   params: Promise<{ state: string }>

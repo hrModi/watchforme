@@ -40,5 +40,12 @@ export default {
     }
 
     console.log(JSON.stringify({ event: 'cron_run', hour, results }))
+
+    // Trigger a Cloudflare Pages rebuild so static city/state pages show fresh prices
+    if (env.DEPLOY_HOOK_URL && results.some(r => r.ok)) {
+      await fetch(env.DEPLOY_HOOK_URL, { method: 'POST' }).catch(err =>
+        console.error('Deploy hook failed:', err)
+      )
+    }
   },
 }
