@@ -1,10 +1,7 @@
-'use client'
-
-import { useState } from 'react'
+import Link from 'next/link'
 import AlertModule from './AlertModule'
 import PriceTrendChart from './PriceTrendChart'
 import MarketInsight from './MarketInsight'
-import Link from 'next/link'
 import type { Country, RateWithTrend } from '@/types'
 
 export interface FuelData {
@@ -12,13 +9,19 @@ export interface FuelData {
   label: string
   rate: RateWithTrend | null
   history: Array<{ value: number; fetched_at: string }>
-  unit?: string              // overrides the page-level unit (e.g. CNG uses ₹/kg vs ₹/L)
-  status?: 'live' | 'coming_soon'
+  unit?: string
+}
+
+export interface Tab {
+  subtype: string
+  label: string
+  href: string
 }
 
 export interface NearbyItem {
   name: string
   slug: string
+  href: string
   price: number | null
   unit: string
 }
@@ -29,7 +32,8 @@ export interface FAQ {
 }
 
 interface CityFuelViewProps {
-  fuels: FuelData[]
+  activeFuel: FuelData
+  tabs: Tab[]
   unit: string
   country: Country
   region: string
@@ -46,17 +50,21 @@ interface CityFuelViewProps {
   faqs?: FAQ[]
 }
 
-function formatTimestamp(iso: string): string {
-  return new Date(iso).toLocaleString('en-IN', {
-    day: 'numeric',
-    month: 'short',
-    hour: '2-digit',
-    minute: '2-digit',
-  })
+// Deterministic: IST (UTC+5:30, no DST) for India, UTC for US — avoids toLocaleString
+// differences between Node.js and the browser.
+function formatTimestamp(iso: string, country: Country): string {
+  const offsetMs = country === 'IN' ? 330 * 60 * 1000 : 0
+  const d = new Date(new Date(iso).getTime() + offsetMs)
+  const day = d.getUTCDate()
+  const month = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][d.getUTCMonth()]
+  const h = d.getUTCHours()
+  const m = d.getUTCMinutes().toString().padStart(2, '0')
+  return `${day} ${month}, ${h % 12 || 12}:${m} ${h >= 12 ? 'pm' : 'am'}`
 }
 
 export default function CityFuelView({
-  fuels,
+  activeFuel,
+  tabs,
   unit,
   country,
   region,
@@ -72,13 +80,9 @@ export default function CityFuelView({
   aboutParagraphs,
   faqs,
 }: CityFuelViewProps) {
-  const firstLive = fuels.find(f => f.status !== 'coming_soon') ?? fuels[0]
-  const [activeSubtype, setActiveSubtype] = useState(firstLive.subtype)
-
-  const active = fuels.find(f => f.subtype === activeSubtype) ?? firstLive
-  const activeUnit = active.unit ?? unit
+  const activeUnit = activeFuel.unit ?? unit
   const sym = activeUnit.startsWith('₹') ? '₹' : '$'
-  const denom = activeUnit.replace(/^[₹$]/, '') // '/L', '/kg', or '/gal'
+  const denom = activeUnit.replace(/^[₹$]/, '')
 
   return (
     <>
@@ -111,65 +115,66 @@ export default function CityFuelView({
             {locationName}
           </p>
 
-          {/* Fuel type tabs */}
+          {/* Fuel type tabs — navigate to fuel-specific URLs */}
           <div className="flex flex-wrap gap-1 mb-5">
-            {fuels.map(fuel => {
-              const isActive = fuel.subtype === activeSubtype
-              const isSoon = fuel.status === 'coming_soon'
+            {tabs.map(tab => {
+              const isActive = tab.subtype === activeFuel.subtype
+              const baseClass = 'px-3 py-1.5 rounded-lg text-sm font-medium transition-colors'
+              const baseStyle = { border: '1px solid' }
+              if (isActive) {
+                return (
+                  <span
+                    key={tab.subtype}
+                    className={baseClass}
+                    style={{ ...baseStyle, backgroundColor: 'var(--accent)', color: '#fff', borderColor: 'var(--accent)' }}
+                    aria-current="true"
+                  >
+                    {tab.label}
+                  </span>
+                )
+              }
               return (
-                <button
-                  key={fuel.subtype}
-                  type="button"
-                  disabled={isSoon}
-                  onClick={() => !isSoon && setActiveSubtype(fuel.subtype)}
-                  title={isSoon ? 'Coming soon' : undefined}
-                  className="px-3 py-1.5 rounded-lg text-sm font-medium transition-colors"
-                  style={{
-                    backgroundColor: isActive ? 'var(--accent)' : 'var(--surface-2)',
-                    color: isActive ? '#fff' : isSoon ? 'var(--text-faint)' : 'var(--text-muted)',
-                    cursor: isSoon ? 'default' : 'pointer',
-                    border: '1px solid',
-                    borderColor: isActive ? 'var(--accent)' : 'var(--border)',
-                  }}
+                <Link
+                  key={tab.subtype}
+                  href={tab.href}
+                  className={baseClass}
+                  style={{ ...baseStyle, backgroundColor: 'var(--surface-2)', color: 'var(--text-muted)', borderColor: 'var(--border)' }}
                 >
-                  {fuel.label}
-                  {isSoon && (
-                    <span className="ml-1.5 text-xs" style={{ color: 'var(--text-faint)' }}>Soon</span>
-                  )}
-                </button>
+                  {tab.label}
+                </Link>
               )
             })}
           </div>
 
           {/* Selected fuel price */}
-          {active.rate ? (
+          {activeFuel.rate ? (
             <div>
               <div className="flex items-baseline gap-2">
                 <span className="font-display text-6xl font-bold tabular tracking-tight" style={{ color: 'var(--text)' }}>
-                  {sym}{active.rate.value.toFixed(2)}
+                  {sym}{activeFuel.rate.value.toFixed(2)}
                 </span>
                 <span className="font-display text-xl font-normal" style={{ color: 'var(--text-muted)' }}>
                   {denom}
                 </span>
-                {active.rate.trend !== 'flat' && (
+                {activeFuel.rate.trend !== 'flat' && (
                   <span
                     className="text-sm font-semibold tabular"
-                    style={{ color: active.rate.trend === 'up' ? '#dc2626' : '#16a34a' }}
+                    style={{ color: activeFuel.rate.trend === 'up' ? '#dc2626' : '#16a34a' }}
                   >
-                    {active.rate.trend === 'up' ? '↑' : '↓'} {Math.abs(active.rate.delta).toFixed(2)}
+                    {activeFuel.rate.trend === 'up' ? '↑' : '↓'} {Math.abs(activeFuel.rate.delta).toFixed(2)}
                   </span>
                 )}
               </div>
               <p className="text-xs mt-2" style={{ color: 'var(--text-muted)' }}>
-                Last updated: {formatTimestamp(active.rate.fetched_at)}
+                Last updated: {formatTimestamp(activeFuel.rate.fetched_at, country)}
               </p>
-              {active.rate.trend !== 'flat' && (
+              {activeFuel.rate.trend !== 'flat' && (
                 <p className="text-xs mt-1.5 flex flex-wrap items-center gap-x-2 gap-y-1" style={{ color: 'var(--text-faint)' }}>
-                  <span>Yesterday: {sym}{(active.rate.value - active.rate.delta).toFixed(2)}</span>
+                  <span>Yesterday: {sym}{(activeFuel.rate.value - activeFuel.rate.delta).toFixed(2)}</span>
                   <span aria-hidden="true">→</span>
-                  <span>Today: {sym}{active.rate.value.toFixed(2)}</span>
-                  <span style={{ color: active.rate.trend === 'up' ? '#dc2626' : '#16a34a', fontWeight: 600 }}>
-                    {active.rate.trend === 'up' ? '↑' : '↓'} {active.rate.delta > 0 ? '+' : ''}{active.rate.delta.toFixed(2)}
+                  <span>Today: {sym}{activeFuel.rate.value.toFixed(2)}</span>
+                  <span style={{ color: activeFuel.rate.trend === 'up' ? '#dc2626' : '#16a34a', fontWeight: 600 }}>
+                    {activeFuel.rate.trend === 'up' ? '↑' : '↓'} {activeFuel.rate.delta > 0 ? '+' : ''}{activeFuel.rate.delta.toFixed(2)}
                   </span>
                 </p>
               )}
@@ -192,15 +197,15 @@ export default function CityFuelView({
               watcher_type="fuel"
               country={country}
               region={region}
-              subtype={active.subtype}
+              subtype={activeFuel.subtype}
               unit={activeUnit}
-              currentValue={active.rate?.value}
+              currentValue={activeFuel.rate?.value}
             />
 
             <PriceTrendChart
-              history={active.history}
+              history={activeFuel.history}
               unit={activeUnit}
-              label={active.label}
+              label={activeFuel.label}
             />
 
             <section aria-labelledby="about-heading">
@@ -252,9 +257,9 @@ export default function CityFuelView({
           {/* Sidebar */}
           <aside className="space-y-6">
             <MarketInsight
-              history={active.history}
+              history={activeFuel.history}
               unit={activeUnit}
-              label={active.label}
+              label={activeFuel.label}
             />
 
             {nearbyItems.length > 0 && (
@@ -275,7 +280,7 @@ export default function CityFuelView({
                   {nearbyItems.map(item => (
                     <Link
                       key={item.slug}
-                      href={`${allItemsHref.replace(/\/?$/, '')}/${item.slug}`}
+                      href={item.href}
                       className="flex items-center justify-between px-3 py-2.5 rounded-lg text-sm"
                       style={{ backgroundColor: 'var(--surface)', border: '1px solid var(--border)', color: 'var(--text)' }}
                     >

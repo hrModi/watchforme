@@ -24,7 +24,7 @@ export default function CountrySwitcher() {
   const router = useRouter()
   const pathname = usePathname()
   const [open, setOpen] = useState(false)
-  const [current, setCurrent] = useState<'IN' | 'US'>('US')
+  const [current, setCurrent] = useState<'IN' | 'US' | null>(null)
 
   useEffect(() => {
     // Sub-pages: always reflect the country the page belongs to — no saving
@@ -52,6 +52,9 @@ export default function CountrySwitcher() {
     setCurrent(code)
     router.push(getEquivalentPath(pathname, code))
   }
+
+  // Render nothing until cookie is read to avoid flicker between default and actual country
+  if (current === null) return <div className="w-[88px] h-[34px]" />
 
   const active = COUNTRIES.find(c => c.code === current) ?? COUNTRIES[0]
 

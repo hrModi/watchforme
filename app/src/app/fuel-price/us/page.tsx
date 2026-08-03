@@ -42,7 +42,7 @@ export default async function USFuelPage() {
           </p>
           <FuelSearch
             items={US_STATES.map(s => ({ name: s.name, slug: s.slug }))}
-            basePath="/fuel-price/us"
+            basePath="/gasoline-price/us"
             fuelTypes={['Gasoline', 'Diesel']}
             popularItems={POPULAR}
           />
@@ -71,7 +71,7 @@ export default async function USFuelPage() {
                   key={state.slug}
                   name={state.name}
                   slug={state.slug}
-                  basePath="/fuel-price/us"
+                  basePath="/gasoline-price/us"
                   primaryRate={gasoline}
                   primaryLabel="Gasoline"
                   secondaryRate={diesel}

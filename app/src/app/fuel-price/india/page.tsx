@@ -43,7 +43,7 @@ export default async function IndiaFuelPage() {
           </p>
           <FuelSearch
             items={INDIA_CITIES.map(c => ({ name: c.name, slug: c.slug, state: c.state }))}
-            basePath="/fuel-price/india"
+            basePath="/petrol-price/india"
             fuelTypes={['Petrol', 'Diesel']}
             popularItems={POPULAR}
           />
@@ -73,7 +73,7 @@ export default async function IndiaFuelPage() {
                   name={city.name}
                   state={city.state}
                   slug={city.slug}
-                  basePath="/fuel-price/india"
+                  basePath="/petrol-price/india"
                   primaryRate={petrol}
                   primaryLabel="Petrol"
                   secondaryRate={diesel}
