@@ -3,7 +3,6 @@ import { z } from 'zod'
 import { Resend } from 'resend'
 import { db, dbAdmin } from '@/lib/db'
 
-export const runtime = 'edge'
 
 const NOTIFY_EMAIL = 'hridaymodi.work@gmail.com'
 const FROM = process.env.EMAIL_FROM ?? 'alerts@watchforme.me'

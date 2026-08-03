@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from 'next/server'
 import { confirmAlert, expireAlert } from '@/lib/alerts'
 import { dbAdmin } from '@/lib/db'
 
-export const runtime = 'edge'
 
 // WhatsApp Cloud API webhook verification
 export async function GET(request: NextRequest) {

@@ -3,7 +3,6 @@ import { z } from 'zod'
 import { createAlert } from '@/lib/alerts'
 import { sendConfirmationEmail } from '@/lib/email'
 
-export const runtime = 'edge'
 
 const schema = z.object({
   channel: z.enum(['email', 'whatsapp']),

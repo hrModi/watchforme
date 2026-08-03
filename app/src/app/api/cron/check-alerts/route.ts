@@ -5,7 +5,6 @@ import { updateLastValue, triggerAlert } from '@/lib/alerts'
 import { sendTriggerEmail } from '@/lib/email'
 import type { Alert } from '@/types'
 
-export const runtime = 'edge'
 export const maxDuration = 300
 
 export async function POST(request: NextRequest) {

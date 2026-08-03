@@ -1,7 +1,6 @@
 import type { Metadata } from 'next'
 import { headers, cookies } from 'next/headers'
 
-export const runtime = 'edge'
 
 import WatcherCard from '@/components/WatcherCard'
 import { WATCHERS } from '@/config/watchers'

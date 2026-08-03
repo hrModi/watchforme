@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from 'next/server'
 import { runIndiaFuelFetcher } from '@/fetchers/india-fuel'
 import { verifyCronRequest } from '@/lib/tokens'
 
-export const runtime = 'edge'
 export const maxDuration = 300
 
 const VALID_FUEL_TYPES = ['petrol', 'diesel', 'cng'] as const

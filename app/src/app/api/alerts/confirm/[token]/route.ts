@@ -1,7 +1,6 @@
 import { NextRequest } from 'next/server'
 import { confirmAlert } from '@/lib/alerts'
 
-export const runtime = 'edge'
 
 const HTML = (title: string, body: string) => `<!DOCTYPE html>
 <html lang="en">

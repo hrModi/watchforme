@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from 'next/server'
 import { runUSFuelFetcher } from '@/fetchers/us-fuel'
 import { verifyCronRequest } from '@/lib/tokens'
 
-export const runtime = 'edge'
 export const maxDuration = 60
 
 export async function POST(request: NextRequest) {

@@ -3,7 +3,6 @@ import { z } from 'zod'
 import { getAllRegionRates } from '@/lib/rates'
 import type { Country, WatcherType } from '@/types'
 
-export const runtime = 'edge'
 
 const schema = z.object({
   watcher_type: z.string(),
