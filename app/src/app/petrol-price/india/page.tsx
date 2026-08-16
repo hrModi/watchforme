@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import Link from 'next/link'
 import FuelSearch from '@/components/FuelSearch'
 import PriceCard from '@/components/PriceCard'
 import AdSlot from '@/components/AdSlot'
@@ -33,9 +34,14 @@ export default async function PetrolPriceIndiaPage() {
           <h1 className="text-2xl font-bold mb-1" style={{ color: 'var(--text)' }}>
             Petrol Price in India Today
           </h1>
-          <p className="text-sm mb-5" style={{ color: 'var(--text-muted)' }}>
+          <p className="text-sm mb-4" style={{ color: 'var(--text-muted)' }}>
             City-wise petrol rates across India, updated daily at 6 AM.
           </p>
+          <div className="flex flex-wrap gap-2 mb-5">
+            <span className="px-3 py-1.5 rounded-lg text-sm font-medium" style={{ backgroundColor: 'var(--accent)', color: '#fff', border: '1px solid var(--accent)' }}>Petrol</span>
+            <Link href="/diesel-price/india" className="px-3 py-1.5 rounded-lg text-sm font-medium" style={{ backgroundColor: 'var(--surface-2)', color: 'var(--text-muted)', border: '1px solid var(--border)' }}>Diesel</Link>
+            <Link href="/cng-price/india" className="px-3 py-1.5 rounded-lg text-sm font-medium" style={{ backgroundColor: 'var(--surface-2)', color: 'var(--text-muted)', border: '1px solid var(--border)' }}>CNG</Link>
+          </div>
           <FuelSearch
             items={INDIA_CITIES.map(c => ({ name: c.name, slug: c.slug, state: c.state }))}
             basePath="/petrol-price/india"

@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import Link from 'next/link'
 
 import FuelSearch from '@/components/FuelSearch'
 import PriceCard from '@/components/PriceCard'
@@ -37,9 +38,13 @@ export default async function USFuelPage() {
           <h1 className="text-2xl font-bold mb-1" style={{ color: 'var(--text)' }}>
             US Gas Prices by State
           </h1>
-          <p className="text-sm mb-5" style={{ color: 'var(--text-muted)' }}>
+          <p className="text-sm mb-4" style={{ color: 'var(--text-muted)' }}>
             Gasoline and diesel prices across all 50 states, updated daily from AAA.
           </p>
+          <div className="flex flex-wrap gap-2 mb-5">
+            <Link href="/gasoline-price/us" className="px-3 py-1.5 rounded-lg text-sm font-medium" style={{ backgroundColor: 'var(--surface-2)', color: 'var(--text-muted)', border: '1px solid var(--border)' }}>Gasoline</Link>
+            <Link href="/diesel-price/us" className="px-3 py-1.5 rounded-lg text-sm font-medium" style={{ backgroundColor: 'var(--surface-2)', color: 'var(--text-muted)', border: '1px solid var(--border)' }}>Diesel</Link>
+          </div>
           <FuelSearch
             items={US_STATES.map(s => ({ name: s.name, slug: s.slug }))}
             basePath="/gasoline-price/us"
