@@ -16,7 +16,7 @@ interface PriceCardProps {
   primaryRate?: Rate
   primaryLabel: string
   secondaryRate?: Rate
-  secondaryLabel: string
+  secondaryLabel?: string
 }
 
 function fmt(value: number, unit: string) {
