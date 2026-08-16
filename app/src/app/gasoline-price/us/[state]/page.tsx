@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
+import { cache } from 'react'
 import CityFuelView, { type FuelData, type Tab, type NearbyItem, type FAQ } from '@/components/CityFuelView'
 import AdSlot from '@/components/AdSlot'
 import { getRegionRates, getHistoricalRates, getAllRegionRates } from '@/lib/rates'
@@ -9,13 +10,20 @@ interface Props {
   params: Promise<{ state: string }>
 }
 
+const fetchGasolineRate = cache((stateSlug: string) =>
+  getRegionRates('fuel', 'US', stateSlug, ['gasoline'])
+)
+
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { state: stateSlug } = await params
   const state = getStateBySlug(stateSlug)
   if (!state) return {}
+  const rates = await fetchGasolineRate(stateSlug)
+  const gasoline = rates.find(r => r.subtype === 'gasoline')
+  const priceStr = gasoline ? `$${gasoline.value.toFixed(2)}/gal — ` : ''
   return {
-    title: { absolute: `${state.name} Gas Price Today | WatchForMe` },
-    description: `Today's gasoline price in ${state.name}. Check the latest rate, 30-day trend, and set a free price alert.`,
+    title: { absolute: `${state.name} Gas Price Today: ${priceStr}WatchForMe` },
+    description: `Today's average gasoline price in ${state.name} is $${gasoline?.value?.toFixed(2) ?? 'N/A'}/gallon. Check the 30-day trend and set a free price alert.`,
     alternates: { canonical: `/gasoline-price/us/${state.slug}` },
   }
 }
@@ -26,7 +34,7 @@ export default async function GasolinePricePage({ params }: Props) {
   if (!state) notFound()
 
   const [stateRates, history, allStateRates] = await Promise.all([
-    getRegionRates('fuel', 'US', stateSlug, ['gasoline']),
+    fetchGasolineRate(stateSlug),
     getHistoricalRates('fuel', 'US', stateSlug, 'gasoline', 30),
     getAllRegionRates('fuel', 'US', ['gasoline']),
   ])

@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import AlertModule from './AlertModule'
 import PriceTrendChart from './PriceTrendChart'
+import PriceHistoryTable from './PriceHistoryTable'
 import MarketInsight from './MarketInsight'
 import type { Country, RateWithTrend } from '@/types'
 
@@ -203,6 +204,12 @@ export default function CityFuelView({
             />
 
             <PriceTrendChart
+              history={activeFuel.history}
+              unit={activeUnit}
+              label={activeFuel.label}
+            />
+
+            <PriceHistoryTable
               history={activeFuel.history}
               unit={activeUnit}
               label={activeFuel.label}

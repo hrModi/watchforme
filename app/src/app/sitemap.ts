@@ -24,8 +24,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
   return [
     { url: BASE, lastModified: now, changeFrequency: 'daily', priority: 1.0 },
-    { url: `${BASE}/fuel-price/india`, lastModified: now, changeFrequency: 'daily', priority: 0.9 },
-    { url: `${BASE}/fuel-price/us`,    lastModified: now, changeFrequency: 'daily', priority: 0.9 },
+    { url: `${BASE}/fuel-price/india`,    lastModified: now, changeFrequency: 'daily', priority: 0.9 },
+    { url: `${BASE}/petrol-price/india`,  lastModified: now, changeFrequency: 'daily', priority: 0.9 },
+    { url: `${BASE}/diesel-price/india`,  lastModified: now, changeFrequency: 'daily', priority: 0.9 },
+    { url: `${BASE}/fuel-price/us`,       lastModified: now, changeFrequency: 'daily', priority: 0.9 },
+    { url: `${BASE}/gasoline-price/us`,   lastModified: now, changeFrequency: 'daily', priority: 0.9 },
+    { url: `${BASE}/diesel-price/us`,     lastModified: now, changeFrequency: 'daily', priority: 0.9 },
     ...indiaFuelUrls,
     ...usFuelUrls,
     { url: `${BASE}/about`,   lastModified: now, changeFrequency: 'monthly', priority: 0.5 },

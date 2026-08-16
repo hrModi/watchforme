@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
+import { cache } from 'react'
 import CityFuelView, { type FuelData, type Tab, type NearbyItem, type FAQ } from '@/components/CityFuelView'
 import AdSlot from '@/components/AdSlot'
 import { getRegionRates, getHistoricalRates, getAllRegionRates } from '@/lib/rates'
@@ -9,13 +10,20 @@ interface Props {
   params: Promise<{ city: string }>
 }
 
+const fetchCngRate = cache((citySlug: string) =>
+  getRegionRates('fuel', 'IN', citySlug, ['cng'])
+)
+
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { city: citySlug } = await params
   const city = getCityBySlug(citySlug)
   if (!city) return {}
+  const rates = await fetchCngRate(citySlug)
+  const cng = rates.find(r => r.subtype === 'cng')
+  const priceStr = cng ? `₹${cng.value.toFixed(2)}/kg — ` : ''
   return {
-    title: { absolute: `CNG Price in ${city.name} Today | WatchForMe` },
-    description: `Today's CNG price in ${city.name}, ${city.state}. Check the latest rate, 30-day trend, and set a free price alert.`,
+    title: { absolute: `CNG Price in ${city.name} Today: ${priceStr}WatchForMe` },
+    description: `Today's CNG price in ${city.name} is ₹${cng?.value?.toFixed(2) ?? 'N/A'}/kg. Check the 30-day trend and set a free price alert for ${city.name}, ${city.state}.`,
     alternates: { canonical: `/cng-price/india/${city.slug}` },
   }
 }
@@ -26,7 +34,7 @@ export default async function CngPricePage({ params }: Props) {
   if (!city) notFound()
 
   const [cityRates, history, allCityRates] = await Promise.all([
-    getRegionRates('fuel', 'IN', citySlug, ['cng']),
+    fetchCngRate(citySlug),
     getHistoricalRates('fuel', 'IN', citySlug, 'cng', 30),
     getAllRegionRates('fuel', 'IN', ['cng']),
   ])
