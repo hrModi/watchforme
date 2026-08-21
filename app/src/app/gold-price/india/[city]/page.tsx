@@ -24,7 +24,7 @@ export async function generateMetadata({ params, searchParams }: Props): Promise
   const karatLabel = k === '22' ? '22K' : '24K'
   const rates = await fetchGoldRates(citySlug)
   const rate = rates.find(r => r.subtype === karat)
-  const priceStr = rate ? `₹${rate.value.toLocaleString('en-IN')}/10g — ` : ''
+  const priceStr = rate ? `₹${rate.value.toLocaleString('en-IN')}/10g, ` : ''
   return {
     title: { absolute: `${karatLabel} Gold Price in ${city.name} Today: ${priceStr}WatchForMe` },
     description: `Today's ${karatLabel} gold price in ${city.name} is ₹${rate?.value?.toLocaleString('en-IN') ?? 'N/A'} per 10 grams. Check the 30-day trend and set a free price alert.`,
@@ -81,7 +81,7 @@ export default async function GoldPriceCityPage({ params, searchParams }: Props)
     },
     {
       q: `How can I get a gold price alert for ${city.name}?`,
-      a: `Use WatchForMe to set a free price alert. Enter your target price and email — you'll be notified when the gold price in ${city.name} crosses your threshold. No account needed.`,
+      a: `Use WatchForMe to set a free price alert. Enter your target price and email. You'll be notified when the gold price in ${city.name} crosses your threshold. No account needed.`,
     },
   ]
 

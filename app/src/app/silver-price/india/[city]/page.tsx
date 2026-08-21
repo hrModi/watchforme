@@ -20,7 +20,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (!city) return {}
   const rates = await fetchSilverRate(citySlug)
   const silver = rates.find(r => r.subtype === 'silver')
-  const priceStr = silver ? `₹${silver.value.toLocaleString('en-IN')}/kg — ` : ''
+  const priceStr = silver ? `₹${silver.value.toLocaleString('en-IN')}/kg, ` : ''
   return {
     title: { absolute: `Silver Price in ${city.name} Today: ${priceStr}WatchForMe` },
     description: `Today's silver price in ${city.name} is ₹${silver?.value?.toLocaleString('en-IN') ?? 'N/A'} per kg. Check the 30-day trend and set a free price alert.`,
@@ -72,7 +72,7 @@ export default async function SilverPriceCityPage({ params }: Props) {
     },
     {
       q: `How can I get a silver price alert for ${city.name}?`,
-      a: `Use WatchForMe to set a free price alert. Enter your target price and email — you'll be notified when the silver price in ${city.name} crosses your threshold. No account needed.`,
+      a: `Use WatchForMe to set a free price alert. Enter your target price and email. You'll be notified when the silver price in ${city.name} crosses your threshold. No account needed.`,
     },
   ]
 

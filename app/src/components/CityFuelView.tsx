@@ -3,6 +3,7 @@ import AlertModule from './AlertModule'
 import PriceTrendChart from './PriceTrendChart'
 import PriceHistoryTable from './PriceHistoryTable'
 import MarketInsight from './MarketInsight'
+import { formatPrice } from '@/lib/format'
 import type { Country, RateWithTrend } from '@/types'
 
 export interface FuelData {
@@ -152,7 +153,7 @@ export default function CityFuelView({
             <div>
               <div className="flex items-baseline gap-2">
                 <span className="font-display text-6xl font-bold tabular tracking-tight" style={{ color: 'var(--text)' }}>
-                  {sym}{activeFuel.rate.value.toFixed(2)}
+                  {sym}{formatPrice(activeFuel.rate.value, activeUnit)}
                 </span>
                 <span className="font-display text-xl font-normal" style={{ color: 'var(--text-muted)' }}>
                   {denom}
@@ -162,7 +163,7 @@ export default function CityFuelView({
                     className="text-sm font-semibold tabular"
                     style={{ color: activeFuel.rate.trend === 'up' ? '#dc2626' : '#16a34a' }}
                   >
-                    {activeFuel.rate.trend === 'up' ? '↑' : '↓'} {Math.abs(activeFuel.rate.delta).toFixed(2)}
+                    {activeFuel.rate.trend === 'up' ? '↑' : '↓'} {formatPrice(Math.abs(activeFuel.rate.delta), activeUnit)}
                   </span>
                 )}
               </div>
@@ -171,11 +172,11 @@ export default function CityFuelView({
               </p>
               {activeFuel.rate.trend !== 'flat' && (
                 <p className="text-xs mt-1.5 flex flex-wrap items-center gap-x-2 gap-y-1" style={{ color: 'var(--text-faint)' }}>
-                  <span>Yesterday: {sym}{(activeFuel.rate.value - activeFuel.rate.delta).toFixed(2)}</span>
+                  <span>Yesterday: {sym}{formatPrice(activeFuel.rate.value - activeFuel.rate.delta, activeUnit)}</span>
                   <span aria-hidden="true">→</span>
-                  <span>Today: {sym}{activeFuel.rate.value.toFixed(2)}</span>
+                  <span>Today: {sym}{formatPrice(activeFuel.rate.value, activeUnit)}</span>
                   <span style={{ color: activeFuel.rate.trend === 'up' ? '#dc2626' : '#16a34a', fontWeight: 600 }}>
-                    {activeFuel.rate.trend === 'up' ? '↑' : '↓'} {activeFuel.rate.delta > 0 ? '+' : ''}{activeFuel.rate.delta.toFixed(2)}
+                    {activeFuel.rate.trend === 'up' ? '↑' : '↓'} {activeFuel.rate.delta > 0 ? '+' : ''}{formatPrice(activeFuel.rate.delta, activeUnit)}
                   </span>
                 </p>
               )}
@@ -293,7 +294,7 @@ export default function CityFuelView({
                     >
                       <span>{item.name}</span>
                       <span className="tabular font-medium" style={{ color: item.price ? 'var(--text)' : 'var(--text-muted)' }}>
-                        {item.price ? `${sym}${item.price.toFixed(2)}` : '-'}
+                        {item.price ? `${sym}${formatPrice(item.price, item.unit)}` : '-'}
                       </span>
                     </Link>
                   ))}

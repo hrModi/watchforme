@@ -1,31 +1,29 @@
 // US Metal Price Fetcher
-// Source: stooq.com daily OHLC CSV (no API key, no rate limit)
-// XAUUSD = gold spot price in USD/troy oz
-// XAGUSD = silver spot price in USD/troy oz
-// Cadence: daily at 14:30 UTC (10:30 ET) — after NY market open
+// Source: BullionVault (clean HTML, no API key needed)
+// Cadence: daily at 14:00 UTC (10:00 ET) after NY market open
 
 import { dbAdmin } from '@/lib/db'
 import type { FetcherResult } from '@/types'
 
-const SOURCE = 'stooq'
-const UA = 'Mozilla/5.0 (compatible; WatcherBot/1.0; +https://watchforme.me)'
+const SOURCE = 'bullionvault'
+const UA = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
 
-async function fetchSpotPrice(ticker: string): Promise<number | null> {
-  const url = `https://stooq.com/q/d/l/?s=${ticker}&i=d`
+// Parses: <span data-currency="USD" data-weight="TOZ">$4,606.52</span>
+const PRICE_RE = /data-currency="USD"\s+data-weight="TOZ">\s*\$([0-9,]+\.?\d*)/
+
+async function fetchBullionVaultPrice(path: string): Promise<number | null> {
+  const url = `https://www.bullionvault.com${path}`
   try {
     const res = await fetch(url, {
-      headers: { 'User-Agent': UA },
-      signal: AbortSignal.timeout(10_000),
+      headers: { 'User-Agent': UA, 'Accept': 'text/html' },
+      signal: AbortSignal.timeout(12_000),
     })
     if (!res.ok) return null
-    const text = await res.text()
-    // CSV format: Date,Open,High,Low,Close,Volume
-    // First data row (after header) is the most recent day
-    const lines = text.trim().split('\n')
-    if (lines.length < 2) return null
-    const cols = lines[1].split(',')
-    const close = parseFloat(cols[4] ?? '')
-    return isNaN(close) ? null : close
+    const html = await res.text()
+    const m = html.match(PRICE_RE)
+    if (!m) return null
+    const price = parseFloat(m[1].replace(/,/g, ''))
+    return isNaN(price) ? null : price
   } catch {
     return null
   }
@@ -33,8 +31,8 @@ async function fetchSpotPrice(ticker: string): Promise<number | null> {
 
 export async function runUSMetalsFetcher(): Promise<{ success: number; failed: number }> {
   const [goldPrice, silverPrice] = await Promise.all([
-    fetchSpotPrice('xauusd'),
-    fetchSpotPrice('xagusd'),
+    fetchBullionVaultPrice('/gold-price-chart.do'),
+    fetchBullionVaultPrice('/silver-price-chart.do'),
   ])
 
   if (goldPrice === null && silverPrice === null) {
@@ -48,14 +46,14 @@ export async function runUSMetalsFetcher(): Promise<{ success: number; failed: n
   if (goldPrice !== null) {
     rows.push({ country: 'US', region: null, subtype: 'gold', value: Number(goldPrice.toFixed(2)), unit: '$/oz', source: SOURCE })
   } else {
-    console.error(JSON.stringify({ event: 'us_metals_fetch_error', ticker: 'xauusd' }))
+    console.error(JSON.stringify({ event: 'us_metals_fetch_error', metal: 'gold' }))
     failed++
   }
 
   if (silverPrice !== null) {
     rows.push({ country: 'US', region: null, subtype: 'silver', value: Number(silverPrice.toFixed(4)), unit: '$/oz', source: SOURCE })
   } else {
-    console.error(JSON.stringify({ event: 'us_metals_fetch_error', ticker: 'xagusd' }))
+    console.error(JSON.stringify({ event: 'us_metals_fetch_error', metal: 'silver' }))
     failed++
   }
 

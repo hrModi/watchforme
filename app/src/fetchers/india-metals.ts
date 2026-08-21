@@ -21,26 +21,25 @@ function parseInrAmount(s: string): number | null {
 interface GoldRates { k24: number | null; k22: number | null }
 
 function extractGoldRates(html: string): GoldRates {
-  // Split at the 24K section boundary; 22K section comes first on goodreturns
-  const parts = html.split(/24\s*(?:Carat|Karat|K)\b/i)
-  const section22 = parts[0] ?? ''
-  const section24 = parts[1] ?? ''
+  // Prices are embedded as a JS object: currentMetalPrices = { '24': 16063, '22': 14725, ... }
+  // Values are per gram — multiply by 10 to get ₹/10g
+  const blockMatch = html.match(/currentMetalPrices\s*=\s*(\{[^}]+\})/s)
+  if (!blockMatch) return { k24: null, k22: null }
+  const block = blockMatch[1]
 
-  const tenGramRe = /10\s*(?:[Gg]ram|g\b)[^₹]*₹\s*([\d,]+)/s
-
-  const m22 = section22.match(tenGramRe)
-  const m24 = section24.match(tenGramRe)
+  const m24 = block.match(/'24'\s*:\s*(\d+)/)
+  const m22 = block.match(/'22'\s*:\s*(\d+)/)
 
   return {
-    k22: m22 ? parseInrAmount(m22[1]) : null,
-    k24: m24 ? parseInrAmount(m24[1]) : null,
+    k24: m24 ? parseInt(m24[1]) * 10 : null,
+    k22: m22 ? parseInt(m22[1]) * 10 : null,
   }
 }
 
 function extractSilverRate(html: string): number | null {
-  // Look for 1 Kg row price
-  const m = html.match(/1\s*(?:Kg|kg|KG)\b[^₹]*₹\s*([\d,]+)/s)
-  return m ? parseInrAmount(m[1]) : null
+  // currentSilverPrice is declared per gram in a JS var; multiply by 1000 for ₹/kg
+  const m = html.match(/currentSilverPrice\s*=\s*(\d+)/)
+  return m ? parseInt(m[1]) * 1000 : null
 }
 
 async function fetchGoldPage(goodreturnsSlug: string): Promise<GoldRates> {

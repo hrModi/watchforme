@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect, type FormEvent } from 'react'
+import { formatPrice } from '@/lib/format'
 import type { AlertOperator, Country, WatcherType } from '@/types'
 
 interface AlertModuleProps {
@@ -23,7 +24,9 @@ const OPERATORS: { value: AlertOperator; label: string }[] = [
 type FormState = 'idle' | 'loading' | 'success' | 'duplicate' | 'error'
 
 function defaultThreshold(value?: number) {
-  return value ? String((value * 0.97).toFixed(2)) : ''
+  if (!value) return ''
+  const raw = value * 0.97
+  return value >= 100 ? String(Math.round(raw)) : raw.toFixed(2)
 }
 
 function fuelLabel(subtype: string) {
@@ -135,7 +138,7 @@ export default function AlertModule({
         </p>
         {currentValue && (
           <p className="text-xs mt-0.5" style={{ color: 'var(--text-faint)' }}>
-            Current price: <span className="font-semibold tabular" style={{ color: 'var(--text)' }}>{sym}{currentValue.toFixed(2)}{denom}</span>
+            Current price: <span className="font-semibold tabular" style={{ color: 'var(--text)' }}>{sym}{formatPrice(currentValue, unit)}{denom}</span>
           </p>
         )}
       </div>
@@ -164,12 +167,12 @@ export default function AlertModule({
             <div className="relative">
               <input
                 type="number"
-                step="0.01"
+                step="any"
                 min="0"
                 value={threshold}
                 onChange={e => { setThreshold(e.target.value); setErrors(err => ({ ...err, threshold: '' })) }}
-                placeholder={operator === 'change_pct' ? 'e.g. 5' : 'e.g. 92.00'}
-                className="text-sm rounded-lg border px-3 py-2 w-28 tabular"
+                placeholder={operator === 'change_pct' ? 'e.g. 5' : currentValue ? String(Math.round(currentValue * 0.97)) : 'e.g. 92'}
+                className="text-sm rounded-lg border px-3 py-2 w-36 tabular"
                 style={{ backgroundColor: 'var(--surface-2)', borderColor: errors.threshold ? '#B91C1C' : 'var(--border)', color: 'var(--text)' }}
               />
               <span className="absolute right-2.5 top-1/2 -translate-y-1/2 text-xs pointer-events-none" style={{ color: 'var(--text-faint)' }}>

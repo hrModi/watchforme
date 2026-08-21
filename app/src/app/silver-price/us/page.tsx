@@ -12,7 +12,7 @@ const fetchSilverRate = cache(() =>
 export async function generateMetadata(): Promise<Metadata> {
   const rates = await fetchSilverRate()
   const silver = rates.find(r => r.subtype === 'silver')
-  const priceStr = silver ? `$${silver.value.toFixed(4)}/oz — ` : ''
+  const priceStr = silver ? `$${silver.value.toFixed(4)}/oz, ` : ''
   return {
     title: { absolute: `Silver Price Today (USA): ${priceStr}WatchForMe` },
     description: `Today's silver spot price in the US is $${silver?.value?.toFixed(4) ?? 'N/A'}/troy oz. Check the 30-day trend and set a free price alert.`,
@@ -72,7 +72,7 @@ export default async function SilverPriceUSPage() {
         nearbyHeading=""
         aboutHeading="About US Silver Prices"
         aboutParagraphs={[
-          'The silver spot price shown is sourced from stooq.com (XAGUSD), updated daily after market close. Prices are in USD per troy ounce.',
+          'The silver spot price shown is sourced from BullionVault, updated daily after the New York market opens. Prices are in USD per troy ounce.',
           'Use the alert form above to get notified when the silver price crosses a level you set.',
         ]}
       />

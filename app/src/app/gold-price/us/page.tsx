@@ -12,7 +12,7 @@ const fetchGoldRate = cache(() =>
 export async function generateMetadata(): Promise<Metadata> {
   const rates = await fetchGoldRate()
   const gold = rates.find(r => r.subtype === 'gold')
-  const priceStr = gold ? `$${gold.value.toFixed(2)}/oz — ` : ''
+  const priceStr = gold ? `$${gold.value.toFixed(2)}/oz, ` : ''
   return {
     title: { absolute: `Gold Price Today (USA): ${priceStr}WatchForMe` },
     description: `Today's gold spot price in the US is $${gold?.value?.toFixed(2) ?? 'N/A'}/troy oz. Check the 30-day trend and set a free price alert.`,
@@ -72,7 +72,7 @@ export default async function GoldPriceUSPage() {
         nearbyHeading=""
         aboutHeading="About US Gold Prices"
         aboutParagraphs={[
-          'The gold spot price shown is sourced from stooq.com (XAUUSD), updated daily after market close. Prices are in USD per troy ounce.',
+          'The gold spot price shown is sourced from BullionVault, updated daily after the New York market opens. Prices are in USD per troy ounce.',
           'Use the alert form above to get notified when the gold price crosses a level you set.',
         ]}
       />
