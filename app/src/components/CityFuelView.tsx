@@ -37,7 +37,7 @@ interface CityFuelViewProps {
   tabs: Tab[]
   unit: string
   country: Country
-  region: string
+  region?: string
   locationName: string
   pageHeading?: string
   backHref: string

@@ -16,7 +16,7 @@ export const WATCHERS: WatcherDef[] = [
     name: 'Gold & Silver Rate Watcher',
     description: 'Live gold and silver rates updated every 15 minutes during market hours.',
     countries: ['IN', 'US'],
-    status: 'coming_soon',
+    status: 'live',
     icon: '🥇',
   },
   {

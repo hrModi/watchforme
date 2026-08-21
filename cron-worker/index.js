@@ -30,11 +30,20 @@ export default {
       results.push(await callEndpoint(env, '/api/cron/check-alerts'))
     }
 
+    if (hour === 7) {
+      // 07:00 UTC — fetch India metals (12:30 IST) after MCX opens
+      for (const metal of ['gold', 'silver']) {
+        results.push(await callEndpoint(env, `/api/cron/fetch-india-metals?metal=${metal}`))
+      }
+      results.push(await callEndpoint(env, '/api/cron/check-alerts'))
+    }
+
     if (hour === 14) {
-      // 14:00 UTC — fetch US fuel (09:00 ET) — single AAA page fetch, no batching needed
-      const fetch = await callEndpoint(env, '/api/cron/fetch-us-fuel')
-      results.push(fetch)
-      if (fetch.ok) {
+      // 14:00 UTC — fetch US fuel (09:00 ET) and US metal spot prices
+      const usFuel = await callEndpoint(env, '/api/cron/fetch-us-fuel')
+      results.push(usFuel)
+      results.push(await callEndpoint(env, '/api/cron/fetch-us-metals'))
+      if (usFuel.ok) {
         results.push(await callEndpoint(env, '/api/cron/check-alerts'))
       }
     }
