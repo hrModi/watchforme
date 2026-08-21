@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { formatPrice } from '@/lib/format'
 import type { RegionRate } from '@/types'
 
 interface RatesTableProps {
@@ -11,7 +12,7 @@ interface RatesTableProps {
 
 function formatValue(value: number, unit: string) {
   const symbol = unit.startsWith('₹') ? '₹' : '$'
-  return `${symbol}${value.toFixed(2)}`
+  return `${symbol}${formatPrice(value, unit)}`
 }
 
 function formatDate(iso: string) {

@@ -1,6 +1,7 @@
 'use client'
 
 import Link from 'next/link'
+import { formatPrice } from '@/lib/format'
 
 interface Rate {
   value: number
@@ -21,7 +22,11 @@ interface PriceCardProps {
 
 function fmt(value: number, unit: string) {
   const sym = unit.startsWith('₹') ? '₹' : '$'
-  return `${sym}${value.toFixed(2)}`
+  return `${sym}${formatPrice(value, unit)}`
+}
+
+function unitDenom(unit: string): string {
+  return unit.replace(/^[₹$]\//, '')
 }
 
 function relativeDate(iso: string) {
@@ -71,7 +76,7 @@ export default function PriceCard({
         <p className="font-display text-2xl font-bold tabular tracking-tight" style={{ color: 'var(--text)' }}>
           {fmt(primaryRate.value, primaryRate.unit)}
           <span className="text-sm font-normal ml-1" style={{ color: 'var(--text-muted)' }}>
-            /{primaryRate.unit.includes('gal') ? 'gal' : 'L'}
+            /{unitDenom(primaryRate.unit)}
           </span>
         </p>
       ) : (

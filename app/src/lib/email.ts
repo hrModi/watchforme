@@ -1,4 +1,5 @@
 import { Resend } from 'resend'
+import { formatPrice } from '@/lib/format'
 import type { Alert } from '@/types'
 
 const FROM = process.env.EMAIL_FROM ?? 'alerts@watchforme.me'
@@ -28,7 +29,7 @@ function operatorLabel(operator: string): string {
 function formatValue(value: number, unit: string, isPct = false): string {
   if (isPct) return `${value}%`
   const sym = unit.startsWith('₹') ? '₹' : '$'
-  return `${sym}${value.toFixed(2)}`
+  return `${sym}${formatPrice(value, unit)}`
 }
 
 export async function sendConfirmationEmail(alert: Alert, unit: string): Promise<void> {
@@ -60,7 +61,7 @@ export async function sendTriggerEmail(alert: Alert, currentValue: number, unit:
   await getResend().emails.send({
     from: FROM,
     to: alert.email,
-    subject: `Price alert fired: ${fuel} in ${location} is now ${sym}${currentValue.toFixed(2)}`,
+    subject: `Price alert fired: ${fuel} in ${location} is now ${sym}${formatPrice(currentValue, unit)}`,
     html: buildTriggerHtml({ fuel, location, currentValue, unit, condition, unsubscribeUrl }),
   })
 }
@@ -170,7 +171,7 @@ function buildTriggerHtml({ fuel, location, currentValue, unit, condition, unsub
         <td>
           <p style="margin:0 0 4px;font-size:13px;color:#8a909e;">Current price</p>
           <p style="margin:0;font-size:36px;font-weight:700;color:#111826;font-variant-numeric:tabular-nums;letter-spacing:-0.02em;">
-            ${sym}${currentValue.toFixed(2)}<span style="font-size:16px;font-weight:400;color:#5C6478;">${denom}</span>
+            ${sym}${formatPrice(currentValue, unit)}<span style="font-size:16px;font-weight:400;color:#5C6478;">${denom}</span>
           </p>
         </td>
       </tr>

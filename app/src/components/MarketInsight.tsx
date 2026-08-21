@@ -9,9 +9,11 @@ interface MarketInsightProps {
   label: string
 }
 
+import { formatPrice } from '@/lib/format'
+
 function fmt(value: number, unit: string) {
   const sym = unit.startsWith('₹') ? '₹' : '$'
-  return `${sym}${value.toFixed(2)}`
+  return `${sym}${formatPrice(value, unit)}`
 }
 
 function getPreviousPrice(history: DataPoint[]): number | null {

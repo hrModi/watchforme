@@ -1,3 +1,4 @@
+import { formatPrice } from '@/lib/format'
 import type { RateWithTrend } from '@/types'
 
 interface HeroProps {
@@ -8,7 +9,7 @@ interface HeroProps {
 }
 
 function formatValue(value: number, unit: string): string {
-  return `${unit.startsWith('₹') ? '₹' : '$'}${value.toFixed(2)}`
+  return `${unit.startsWith('₹') ? '₹' : '$'}${formatPrice(value, unit)}`
 }
 
 function formatTimestamp(iso: string): string {
@@ -22,11 +23,11 @@ function formatTimestamp(iso: string): string {
 
 function TrendArrow({ trend, delta, unit }: { trend: string; delta: number; unit: string }) {
   const symbol = trend === 'up' ? '↑' : trend === 'down' ? '↓' : null
-  const label = trend === 'flat' ? 'No change' : `${symbol} ${Math.abs(delta).toFixed(2)} ${unit}`
+  const label = trend === 'flat' ? 'No change' : `${symbol} ${formatPrice(Math.abs(delta), unit)} ${unit}`
   if (!symbol) return <span className="text-sm" style={{ color: 'var(--text-faint)' }} aria-label="No change">No change</span>
   return (
     <span className={`text-sm font-medium trend-${trend}`} aria-label={label}>
-      {symbol} {Math.abs(delta).toFixed(2)}
+      {symbol} {formatPrice(Math.abs(delta), unit)}
     </span>
   )
 }

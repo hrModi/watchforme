@@ -1,3 +1,5 @@
+import { formatPrice } from '@/lib/format'
+
 interface DataPoint {
   value: number
   fetched_at: string
@@ -60,12 +62,12 @@ export default function PriceHistoryTable({ history, unit, label }: PriceHistory
                     {formatDate(row.fetched_at)}
                   </td>
                   <td className="px-4 py-2.5 text-right tabular font-medium" style={{ color: 'var(--text)' }}>
-                    {sym}{row.value.toFixed(2)}
+                    {sym}{formatPrice(row.value, unit)}
                   </td>
                   <td className="px-4 py-2.5 text-right tabular text-xs font-medium"
                     style={{ color: isUp ? '#dc2626' : isDown ? '#16a34a' : 'var(--text-faint)' }}
                   >
-                    {delta === null ? '—' : isUp ? `↑ ${delta.toFixed(2)}` : isDown ? `↓ ${Math.abs(delta).toFixed(2)}` : '—'}
+                    {delta === null ? '—' : isUp ? `↑ ${formatPrice(delta, unit)}` : isDown ? `↓ ${formatPrice(Math.abs(delta), unit)}` : '—'}
                   </td>
                 </tr>
               )

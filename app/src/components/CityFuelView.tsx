@@ -52,6 +52,13 @@ interface CityFuelViewProps {
   faqs?: FAQ[]
 }
 
+function priceTextClass(value: number, unit: string): string {
+  const formatted = formatPrice(value, unit)
+  const totalLen = formatted.length + 1 // +1 for ₹ or $
+  if (totalLen >= 9) return 'text-5xl sm:text-6xl'
+  return 'text-6xl'
+}
+
 // Deterministic: IST (UTC+5:30, no DST) for India, UTC for US — avoids toLocaleString
 // differences between Node.js and the browser.
 function formatTimestamp(iso: string, country: Country): string {
@@ -152,7 +159,7 @@ export default function CityFuelView({
           {activeFuel.rate ? (
             <div>
               <div className="flex items-baseline gap-2">
-                <span className="font-display text-6xl font-bold tabular tracking-tight" style={{ color: 'var(--text)' }}>
+                <span className={`font-display ${priceTextClass(activeFuel.rate.value, activeUnit)} font-bold tabular tracking-tight`} style={{ color: 'var(--text)' }}>
                   {sym}{formatPrice(activeFuel.rate.value, activeUnit)}
                 </span>
                 <span className="font-display text-xl font-normal" style={{ color: 'var(--text-muted)' }}>

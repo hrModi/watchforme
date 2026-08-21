@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { formatPrice } from '@/lib/format'
 
 interface DataPoint {
   value: number
@@ -15,9 +16,10 @@ interface PriceTrendChartProps {
 
 const W = 600
 const H = 180
-const PAD = { top: 16, right: 16, bottom: 40, left: 64 }
+const PAD = { top: 16, right: 16, bottom: 40, left: 72 }
 const innerW = W - PAD.left - PAD.right
 const innerH = H - PAD.top - PAD.bottom
+const TOOLTIP_W = 104
 
 function shortDate(iso: string) {
   return new Date(iso).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })
@@ -50,7 +52,7 @@ export default function PriceTrendChart({ history, unit, label }: PriceTrendChar
           {history.length === 1 ? (
             <>
               <p className="font-medium" style={{ color: 'var(--text)' }}>
-                {unit.startsWith('₹') ? '₹' : '$'}{history[0].value.toFixed(2)} today
+                {unit.startsWith('₹') ? '₹' : '$'}{formatPrice(history[0].value, unit)} today
               </p>
               <p className="mt-1 text-xs">Trend chart will appear as data accumulates daily.</p>
             </>
@@ -100,7 +102,6 @@ export default function PriceTrendChart({ history, unit, label }: PriceTrendChar
   const last = history[history.length - 1]
 
   // Tooltip box: keep it within chart bounds
-  const TOOLTIP_W = 90
   const TOOLTIP_H = 44
   const tooltipX = tooltip
     ? Math.max(PAD.left, Math.min(tooltip.x - TOOLTIP_W / 2, W - PAD.right - TOOLTIP_W))
@@ -134,7 +135,7 @@ export default function PriceTrendChart({ history, unit, label }: PriceTrendChar
                 <g key={i}>
                   <line x1={PAD.left} y1={y} x2={W - PAD.right} y2={y} stroke="var(--border)" strokeWidth="0.5" />
                   <text x={PAD.left - 6} y={y + 4} textAnchor="end" fontSize="10" fill="var(--text-faint)">
-                    {sym}{tick.toFixed(2)}
+                    {sym}{formatPrice(tick, unit)}
                   </text>
                 </g>
               )
@@ -190,7 +191,7 @@ export default function PriceTrendChart({ history, unit, label }: PriceTrendChar
                   x={tooltipX + TOOLTIP_W / 2} y={tooltipY + 17}
                   textAnchor="middle" fontSize="12" fontWeight="600" fill="var(--text)"
                 >
-                  {sym}{tooltip.value.toFixed(2)}
+                  {sym}{formatPrice(tooltip.value, unit)}
                 </text>
                 <text
                   x={tooltipX + TOOLTIP_W / 2} y={tooltipY + 33}
