@@ -24,8 +24,9 @@ export default function sitemap(): MetadataRoute.Sitemap {
   ])
 
   const indiaMetalUrls: MetadataRoute.Sitemap = METAL_CITIES.flatMap(city => [
-    { url: `${BASE}/gold-price/india/${city.slug}`,   lastModified: now, changeFrequency: 'daily' as const, priority: 0.8 },
-    { url: `${BASE}/silver-price/india/${city.slug}`, lastModified: now, changeFrequency: 'daily' as const, priority: 0.7 },
+    { url: `${BASE}/gold-price/india/${city.slug}`,        lastModified: now, changeFrequency: 'daily' as const, priority: 0.8 },
+    { url: `${BASE}/gold-price/india/${city.slug}/22k`,    lastModified: now, changeFrequency: 'daily' as const, priority: 0.8 },
+    { url: `${BASE}/silver-price/india/${city.slug}`,      lastModified: now, changeFrequency: 'daily' as const, priority: 0.7 },
   ])
 
   return [

@@ -19,31 +19,28 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const city = getMetalCityBySlug(citySlug)
   if (!city) return {}
   const rates = await fetchGoldRates(citySlug)
-  const rate = rates.find(r => r.subtype === 'gold_24k')
+  const rate = rates.find(r => r.subtype === 'gold_22k')
   const priceStr = rate ? `₹${rate.value.toLocaleString('en-IN')}/10g, ` : ''
   return {
-    title: { absolute: `24K Gold Price in ${city.name} Today: ${priceStr}WatchForMe` },
-    description: `Today's 24K gold price in ${city.name} is ₹${rate?.value?.toLocaleString('en-IN') ?? 'N/A'} per 10 grams. Check the 30-day trend and set a free price alert.`,
-    alternates: { canonical: `/gold-price/india/${city.slug}` },
+    title: { absolute: `22K Gold Price in ${city.name} Today: ${priceStr}WatchForMe` },
+    description: `Today's 22K gold price in ${city.name} is ₹${rate?.value?.toLocaleString('en-IN') ?? 'N/A'} per 10 grams. Check the 30-day trend and set a free price alert.`,
+    alternates: { canonical: `/gold-price/india/${city.slug}/22k` },
   }
 }
 
-export default async function GoldPriceCityPage({ params }: Props) {
+export default async function GoldPrice22KCityPage({ params }: Props) {
   const { city: citySlug } = await params
   const city = getMetalCityBySlug(citySlug)
   if (!city) notFound()
 
-  const karat = 'gold_24k'
-  const karatLabel = '24K Gold'
-
   const [cityRates, history, allCityRates] = await Promise.all([
     fetchGoldRates(citySlug),
-    getHistoricalRates('gold', 'IN', citySlug, karat, 30),
-    getAllRegionRates('gold', 'IN', ['gold_24k']),
+    getHistoricalRates('gold', 'IN', citySlug, 'gold_22k', 30),
+    getAllRegionRates('gold', 'IN', ['gold_22k']),
   ])
 
-  const activeRate = cityRates.find(r => r.subtype === karat) ?? null
-  const activeFuel: FuelData = { subtype: karat, label: karatLabel, rate: activeRate, history, unit: '₹/10g' }
+  const activeRate = cityRates.find(r => r.subtype === 'gold_22k') ?? null
+  const activeFuel: FuelData = { subtype: 'gold_22k', label: '22K Gold', rate: activeRate, history, unit: '₹/10g' }
 
   const tabs: Tab[] = [
     { subtype: 'gold_24k', label: '24K Gold', href: `/gold-price/india/${citySlug}` },
@@ -57,26 +54,26 @@ export default async function GoldPriceCityPage({ params }: Props) {
     .slice(0, 5)
     .map(c => {
       const r = ratesByRegion.get(c.slug)
-      const g = r?.rates.find(x => x.subtype === 'gold_24k')
-      return { name: c.name, slug: c.slug, href: `/gold-price/india/${c.slug}`, price: g?.value ?? null, unit: '₹/10g' }
+      const g = r?.rates.find(x => x.subtype === 'gold_22k')
+      return { name: c.name, slug: c.slug, href: `/gold-price/india/${c.slug}/22k`, price: g?.value ?? null, unit: '₹/10g' }
     })
 
   const faqs: FAQ[] = [
     {
-      q: `What is the ${karatLabel} gold price in ${city.name} today?`,
-      a: `Today's ${karatLabel} gold price in ${city.name} is ₹${activeRate?.value?.toLocaleString('en-IN') ?? 'N/A'} per 10 grams.`,
+      q: `What is the 22K gold price in ${city.name} today?`,
+      a: `Today's 22K gold price in ${city.name} is ₹${activeRate?.value?.toLocaleString('en-IN') ?? 'N/A'} per 10 grams.`,
     },
     {
-      q: `Why do gold prices differ between cities?`,
-      a: `Gold prices vary between cities due to differences in local state taxes, making charges, and dealer margins. International spot price and the USD/INR exchange rate form the common base.`,
+      q: `Why is 22K gold used for jewellery?`,
+      a: `22K gold is 91.7% pure gold alloyed with copper or silver, making it harder and more durable than 24K gold. This makes it ideal for jewellery that must withstand daily wear.`,
     },
     {
       q: `What is the difference between 22K and 24K gold?`,
-      a: `24K gold is 99.9% pure and used primarily for investment (coins, bars). 22K gold is 91.7% pure and is preferred for jewellery due to its greater durability.`,
+      a: `24K gold is 99.9% pure and used primarily for investment (coins, bars). 22K gold is 91.7% pure and is the standard for gold jewellery in India due to its greater durability.`,
     },
     {
-      q: `How can I get a gold price alert for ${city.name}?`,
-      a: `Use WatchForMe to set a free price alert. Enter your target price and email. You'll be notified when the gold price in ${city.name} crosses your threshold. No account needed.`,
+      q: `How can I get a 22K gold price alert for ${city.name}?`,
+      a: `Use WatchForMe to set a free price alert. Enter your target price and email. You'll be notified when the 22K gold price in ${city.name} crosses your threshold. No account needed.`,
     },
   ]
 
@@ -88,6 +85,7 @@ export default async function GoldPriceCityPage({ params }: Props) {
       { '@type': 'ListItem', position: 1, name: 'Home', item: baseUrl },
       { '@type': 'ListItem', position: 2, name: 'Gold Price India', item: `${baseUrl}/gold-price/india` },
       { '@type': 'ListItem', position: 3, name: `${city.name} Gold Price`, item: `${baseUrl}/gold-price/india/${city.slug}` },
+      { '@type': 'ListItem', position: 4, name: `22K Gold Price in ${city.name}`, item: `${baseUrl}/gold-price/india/${city.slug}/22k` },
     ],
   }
   const faqSchema = {
@@ -112,17 +110,17 @@ export default async function GoldPriceCityPage({ params }: Props) {
         country="IN"
         region={city.slug}
         locationName={`${city.name}, ${city.state}`}
-        pageHeading={`${karatLabel} Price in ${city.name} Today`}
+        pageHeading={`22K Gold Price in ${city.name} Today`}
         backHref="/gold-price/india"
         backLabel="India Gold Prices"
         nearbyItems={nearbyItems}
         allItemsHref="/gold-price/india"
         allItemsLabel="All cities"
         nearbyHeading="Other Cities"
-        aboutHeading={`About Gold Prices in ${city.name}`}
+        aboutHeading={`About 22K Gold Prices in ${city.name}`}
         aboutParagraphs={[
-          `Gold prices in ${city.name} are updated daily based on international spot prices, the USD/INR rate, import duty, and local state levies. Rates are quoted per 10 grams.`,
-          `Use the alert form above to get notified when ${city.name} gold prices cross a level you set.`,
+          `22K gold prices in ${city.name} are updated daily based on international spot prices, the USD/INR rate, import duty, and local state levies. Rates are quoted per 10 grams.`,
+          `22K gold (91.7% purity) is the most common standard for gold jewellery in India. Use the alert form above to get notified when prices cross your target.`,
         ]}
         faqs={faqs}
       />
