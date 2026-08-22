@@ -29,8 +29,13 @@ function defaultThreshold(value?: number) {
   return value >= 100 ? String(Math.round(raw)) : raw.toFixed(2)
 }
 
+const SUBTYPE_LABELS: Record<string, string> = {
+  gold_24k: '24K Gold', gold_22k: '22K Gold', gold: 'Gold', silver: 'Silver',
+  petrol: 'Petrol', diesel: 'Diesel', cng: 'CNG', gasoline: 'Gasoline',
+}
+
 function fuelLabel(subtype: string) {
-  return subtype.charAt(0).toUpperCase() + subtype.slice(1)
+  return SUBTYPE_LABELS[subtype] ?? subtype.charAt(0).toUpperCase() + subtype.slice(1)
 }
 
 export default function AlertModule({

@@ -41,10 +41,13 @@ export default function Hero({ primaryRate, secondaryRate, locationName, country
     )
   }
 
-  const primaryLabel = primaryRate.subtype.charAt(0).toUpperCase() + primaryRate.subtype.slice(1)
-  const secondaryLabel = secondaryRate
-    ? secondaryRate.subtype.charAt(0).toUpperCase() + secondaryRate.subtype.slice(1)
-    : null
+  const SUBTYPE_LABELS: Record<string, string> = {
+    gold_24k: '24K Gold', gold_22k: '22K Gold', gold: 'Gold', silver: 'Silver',
+    petrol: 'Petrol', diesel: 'Diesel', cng: 'CNG', gasoline: 'Gasoline',
+  }
+  const toLabel = (s: string) => SUBTYPE_LABELS[s] ?? s.charAt(0).toUpperCase() + s.slice(1)
+  const primaryLabel = toLabel(primaryRate.subtype)
+  const secondaryLabel = secondaryRate ? toLabel(secondaryRate.subtype) : null
 
   return (
     <div
