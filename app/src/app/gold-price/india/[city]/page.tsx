@@ -5,6 +5,7 @@ import CityFuelView, { type FuelData, type Tab, type NearbyItem, type FAQ } from
 import AdSlot from '@/components/AdSlot'
 import { getRegionRates, getHistoricalRates, getAllRegionRates } from '@/lib/rates'
 import { METAL_CITIES, getMetalCityBySlug } from '@/config/metal-cities'
+import { formatINR } from '@/lib/format'
 
 interface Props {
   params: Promise<{ city: string }>
@@ -23,7 +24,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const priceStr = rate ? `₹${rate.value.toLocaleString('en-IN')}/10g, ` : ''
   return {
     title: { absolute: `24K Gold Price in ${city.name} Today: ${priceStr}WatchForMe` },
-    description: `Today's 24K gold price in ${city.name} is ₹${rate?.value?.toLocaleString('en-IN') ?? 'N/A'} per 10 grams. Check the 30-day trend and set a free price alert.`,
+    description: `Today's 24K gold price in ${city.name} is ₹${rate?.value?.toLocaleString('en-IN') ?? 'N/A'} per 10 grams. Track the 30-day trend, compare with yesterday's rate, and set a free email alert when gold crosses your target price. No signup needed.`,
     alternates: { canonical: `/gold-price/india/${city.slug}` },
   }
 }
@@ -61,6 +62,14 @@ export default async function GoldPriceCityPage({ params }: Props) {
       return { name: c.name, slug: c.slug, href: `/gold-price/india/${c.slug}`, price: g?.value ?? null, unit: '₹/10g' }
     })
 
+  const sorted = [...history].sort((a, b) => new Date(a.fetched_at).getTime() - new Date(b.fetched_at).getTime())
+  const hFirst = sorted[0]
+  const hLast = sorted[sorted.length - 1]
+  const hasTrend = sorted.length >= 2 && hFirst.fetched_at !== hLast.fetched_at
+  const change30 = hasTrend ? hLast.value - hFirst.value : 0
+  const pct30 = hasTrend && hFirst.value > 0 ? Math.abs(change30 / hFirst.value * 100).toFixed(1) : '0.0'
+  const dir30 = change30 > 0 ? 'risen' : change30 < 0 ? 'fallen' : 'remained stable'
+
   const faqs: FAQ[] = [
     {
       q: `What is the ${karatLabel} gold price in ${city.name} today?`,
@@ -78,6 +87,10 @@ export default async function GoldPriceCityPage({ params }: Props) {
       q: `How can I get a gold price alert for ${city.name}?`,
       a: `Use WatchForMe to set a free price alert. Enter your target price and email. You'll be notified when the gold price in ${city.name} crosses your threshold. No account needed.`,
     },
+    ...(hasTrend ? [{
+      q: `How has the ${karatLabel} gold price in ${city.name} changed over the past 30 days?`,
+      a: `Over the past 30 days, the ${karatLabel} gold price in ${city.name} has ${dir30} by ₹${formatINR(Math.round(Math.abs(change30)))} (${pct30}%), from ₹${formatINR(Math.round(hFirst.value))}/10g to ₹${formatINR(Math.round(hLast.value))}/10g.`,
+    }] : []),
   ]
 
   const baseUrl = process.env.NEXT_PUBLIC_APP_URL ?? 'https://watchforme.me'
@@ -122,9 +135,11 @@ export default async function GoldPriceCityPage({ params }: Props) {
         aboutHeading={`About Gold Prices in ${city.name}`}
         aboutParagraphs={[
           `Gold prices in ${city.name} are updated daily based on international spot prices, the USD/INR rate, import duty, and local state levies. Rates are quoted per 10 grams.`,
+          ...(hasTrend ? [`Over the past 30 days, ${karatLabel} gold in ${city.name} has ${dir30} by ₹${formatINR(Math.round(Math.abs(change30)))} (${pct30}%), from ₹${formatINR(Math.round(hFirst.value))}/10g to ₹${formatINR(Math.round(hLast.value))}/10g.`] : []),
           `Use the alert form above to get notified when ${city.name} gold prices cross a level you set.`,
         ]}
         faqs={faqs}
+        watcher_type="gold"
       />
       <div className="max-w-6xl mx-auto px-4 sm:px-6 pb-8">
         <AdSlot slot="C" />

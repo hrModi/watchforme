@@ -4,7 +4,7 @@ import PriceTrendChart from './PriceTrendChart'
 import PriceHistoryTable from './PriceHistoryTable'
 import MarketInsight from './MarketInsight'
 import { formatPrice } from '@/lib/format'
-import type { Country, RateWithTrend } from '@/types'
+import type { Country, RateWithTrend, WatcherType } from '@/types'
 
 export interface FuelData {
   subtype: string
@@ -50,6 +50,7 @@ interface CityFuelViewProps {
   aboutHeading: string
   aboutParagraphs: string[]
   faqs?: FAQ[]
+  watcher_type?: WatcherType
 }
 
 function priceTextClass(value: number, unit: string): string {
@@ -88,6 +89,7 @@ export default function CityFuelView({
   aboutHeading,
   aboutParagraphs,
   faqs,
+  watcher_type = 'fuel',
 }: CityFuelViewProps) {
   const activeUnit = activeFuel.unit ?? unit
   const sym = activeUnit.startsWith('₹') ? '₹' : '$'
@@ -203,7 +205,7 @@ export default function CityFuelView({
           {/* Main column */}
           <div className="space-y-6">
             <AlertModule
-              watcher_type="fuel"
+              watcher_type={watcher_type}
               country={country}
               region={region}
               subtype={activeFuel.subtype}

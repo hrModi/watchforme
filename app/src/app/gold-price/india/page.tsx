@@ -24,8 +24,19 @@ export default async function GoldPriceIndiaPage() {
   const cityRates = await getAllRegionRates('gold', 'IN', ['gold_24k', 'gold_22k'])
   const ratesByRegion = new Map(cityRates.map(r => [r.region, r]))
 
+  const baseUrl = process.env.NEXT_PUBLIC_APP_URL ?? 'https://watchforme.me'
+  const breadcrumbSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Home', item: baseUrl },
+      { '@type': 'ListItem', position: 2, name: 'Gold Price in India', item: `${baseUrl}/gold-price/india` },
+    ],
+  }
+
   return (
     <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} />
       <div
         className="px-4 sm:px-6 py-8"
         style={{ borderBottom: '1px solid var(--border)', backgroundColor: 'var(--surface)' }}
@@ -73,6 +84,7 @@ export default async function GoldPriceIndiaPage() {
                   primaryLabel="24K"
                   secondaryRate={k22}
                   secondaryLabel="22K"
+                  secondaryHref={`/gold-price/india/${city.slug}/22k`}
                 />
               )
             })}
