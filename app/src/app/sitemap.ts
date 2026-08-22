@@ -6,7 +6,9 @@ import { METAL_CITIES } from '@/config/metal-cities'
 const BASE = (process.env.NEXT_PUBLIC_APP_URL ?? 'https://watchforme.me').replace(/\/$/, '')
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const now = new Date()
+  const todayUTC = new Date()
+  todayUTC.setUTCHours(0, 0, 0, 0)
+  const now = todayUTC
 
   const indiaFuelUrls: MetadataRoute.Sitemap = INDIA_CITIES.flatMap(city => [
     // Legacy URLs kept for already-indexed pages; new canonical URLs added below

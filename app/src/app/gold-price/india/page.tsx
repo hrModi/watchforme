@@ -84,6 +84,7 @@ export default async function GoldPriceIndiaPage() {
                   primaryLabel="24K"
                   secondaryRate={k22}
                   secondaryLabel="22K"
+                  secondaryHref={`/gold-price/india/${city.slug}/22k`}
                 />
               )
             })}

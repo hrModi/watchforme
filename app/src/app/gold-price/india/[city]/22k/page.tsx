@@ -5,6 +5,7 @@ import CityFuelView, { type FuelData, type Tab, type NearbyItem, type FAQ } from
 import AdSlot from '@/components/AdSlot'
 import { getRegionRates, getHistoricalRates, getAllRegionRates } from '@/lib/rates'
 import { METAL_CITIES, getMetalCityBySlug } from '@/config/metal-cities'
+import { formatINR } from '@/lib/format'
 
 interface Props {
   params: Promise<{ city: string }>
@@ -58,6 +59,14 @@ export default async function GoldPrice22KCityPage({ params }: Props) {
       return { name: c.name, slug: c.slug, href: `/gold-price/india/${c.slug}/22k`, price: g?.value ?? null, unit: '₹/10g' }
     })
 
+  const sorted = [...history].sort((a, b) => new Date(a.fetched_at).getTime() - new Date(b.fetched_at).getTime())
+  const hFirst = sorted[0]
+  const hLast = sorted[sorted.length - 1]
+  const hasTrend = sorted.length >= 2 && hFirst.fetched_at !== hLast.fetched_at
+  const change30 = hasTrend ? hLast.value - hFirst.value : 0
+  const pct30 = hasTrend && hFirst.value > 0 ? Math.abs(change30 / hFirst.value * 100).toFixed(1) : '0.0'
+  const dir30 = change30 > 0 ? 'risen' : change30 < 0 ? 'fallen' : 'remained stable'
+
   const faqs: FAQ[] = [
     {
       q: `What is the 22K gold price in ${city.name} today?`,
@@ -75,6 +84,10 @@ export default async function GoldPrice22KCityPage({ params }: Props) {
       q: `How can I get a 22K gold price alert for ${city.name}?`,
       a: `Use WatchForMe to set a free price alert. Enter your target price and email. You'll be notified when the 22K gold price in ${city.name} crosses your threshold. No account needed.`,
     },
+    ...(hasTrend ? [{
+      q: `How has the 22K gold price in ${city.name} changed over the past 30 days?`,
+      a: `Over the past 30 days, the 22K gold price in ${city.name} has ${dir30} by ₹${formatINR(Math.round(Math.abs(change30)))} (${pct30}%), from ₹${formatINR(Math.round(hFirst.value))}/10g to ₹${formatINR(Math.round(hLast.value))}/10g.`,
+    }] : []),
   ]
 
   const baseUrl = process.env.NEXT_PUBLIC_APP_URL ?? 'https://watchforme.me'
@@ -120,6 +133,7 @@ export default async function GoldPrice22KCityPage({ params }: Props) {
         aboutHeading={`About 22K Gold Prices in ${city.name}`}
         aboutParagraphs={[
           `22K gold prices in ${city.name} are updated daily based on international spot prices, the USD/INR rate, import duty, and local state levies. Rates are quoted per 10 grams.`,
+          ...(hasTrend ? [`Over the past 30 days, 22K gold in ${city.name} has ${dir30} by ₹${formatINR(Math.round(Math.abs(change30)))} (${pct30}%), from ₹${formatINR(Math.round(hFirst.value))}/10g to ₹${formatINR(Math.round(hLast.value))}/10g.`] : []),
           `22K gold (91.7% purity) is the most common standard for gold jewellery in India. Use the alert form above to get notified when prices cross your target.`,
         ]}
         faqs={faqs}

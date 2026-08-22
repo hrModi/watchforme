@@ -5,6 +5,7 @@ import CityFuelView, { type FuelData, type Tab, type NearbyItem, type FAQ } from
 import AdSlot from '@/components/AdSlot'
 import { getRegionRates, getHistoricalRates, getAllRegionRates } from '@/lib/rates'
 import { METAL_CITIES, getMetalCityBySlug } from '@/config/metal-cities'
+import { formatINR } from '@/lib/format'
 
 interface Props {
   params: Promise<{ city: string }>
@@ -43,8 +44,8 @@ export default async function SilverPriceCityPage({ params }: Props) {
   const activeFuel: FuelData = { subtype: 'silver', label: 'Silver', rate: silver, history, unit: '₹/kg' }
 
   const tabs: Tab[] = [
-    { subtype: 'gold_24k', label: 'Gold', href: `/gold-price/india/${citySlug}` },
-    { subtype: 'silver',   label: 'Silver', href: `/silver-price/india/${citySlug}` },
+    { subtype: 'gold_24k', label: '24K Gold', href: `/gold-price/india/${citySlug}` },
+    { subtype: 'silver',   label: 'Silver',   href: `/silver-price/india/${citySlug}` },
   ]
 
   const ratesByRegion = new Map(allCityRates.map(r => [r.region, r]))
@@ -56,6 +57,14 @@ export default async function SilverPriceCityPage({ params }: Props) {
       const s = r?.rates.find(x => x.subtype === 'silver')
       return { name: c.name, slug: c.slug, href: `/silver-price/india/${c.slug}`, price: s?.value ?? null, unit: '₹/kg' }
     })
+
+  const sorted = [...history].sort((a, b) => new Date(a.fetched_at).getTime() - new Date(b.fetched_at).getTime())
+  const hFirst = sorted[0]
+  const hLast = sorted[sorted.length - 1]
+  const hasTrend = sorted.length >= 2 && hFirst.fetched_at !== hLast.fetched_at
+  const change30 = hasTrend ? hLast.value - hFirst.value : 0
+  const pct30 = hasTrend && hFirst.value > 0 ? Math.abs(change30 / hFirst.value * 100).toFixed(1) : '0.0'
+  const dir30 = change30 > 0 ? 'risen' : change30 < 0 ? 'fallen' : 'remained stable'
 
   const faqs: FAQ[] = [
     {
@@ -74,6 +83,10 @@ export default async function SilverPriceCityPage({ params }: Props) {
       q: `How can I get a silver price alert for ${city.name}?`,
       a: `Use WatchForMe to set a free price alert. Enter your target price and email. You'll be notified when the silver price in ${city.name} crosses your threshold. No account needed.`,
     },
+    ...(hasTrend ? [{
+      q: `How has the silver price in ${city.name} changed over the past 30 days?`,
+      a: `Over the past 30 days, the silver price in ${city.name} has ${dir30} by ₹${formatINR(Math.round(Math.abs(change30)))} (${pct30}%), from ₹${formatINR(Math.round(hFirst.value))}/kg to ₹${formatINR(Math.round(hLast.value))}/kg.`,
+    }] : []),
   ]
 
   const baseUrl = process.env.NEXT_PUBLIC_APP_URL ?? 'https://watchforme.me'
@@ -118,6 +131,7 @@ export default async function SilverPriceCityPage({ params }: Props) {
         aboutHeading={`About Silver Prices in ${city.name}`}
         aboutParagraphs={[
           `Silver prices in ${city.name} are updated daily based on MCX futures and international spot prices. Rates are quoted per kilogram.`,
+          ...(hasTrend ? [`Over the past 30 days, silver in ${city.name} has ${dir30} by ₹${formatINR(Math.round(Math.abs(change30)))} (${pct30}%), from ₹${formatINR(Math.round(hFirst.value))}/kg to ₹${formatINR(Math.round(hLast.value))}/kg.`] : []),
           `Use the alert form above to get notified when ${city.name} silver prices cross a level you set.`,
         ]}
         faqs={faqs}
