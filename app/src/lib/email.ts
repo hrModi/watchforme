@@ -185,3 +185,61 @@ function buildTriggerHtml({ fuel, location, currentValue, unit, condition, unsub
     </p>
   `)
 }
+
+interface CronResult {
+  path: string
+  status: number
+  ok: boolean
+  success?: number
+  failed?: number
+  error?: string
+}
+
+export async function sendCronFailureEmail(hour: number, results: CronResult[]): Promise<void> {
+  const OWNER = process.env.OWNER_EMAIL ?? 'hridaymodi.work@gmail.com'
+  const failures = results.filter(r => !r.ok || (r.failed !== undefined && r.failed > 0))
+  const totalFailed = failures.reduce((n, r) => n + (r.failed ?? 0), 0)
+  const httpErrors = failures.filter(r => !r.ok).length
+
+  const subject = `WatchForMe cron alert: ${failures.length} endpoint(s) failed at ${String(hour).padStart(2, '0')}:00 UTC`
+
+  const rows = results.map(r => {
+    const statusColor = r.ok ? '#16a34a' : '#dc2626'
+    const statusText = r.ok ? 'OK' : `FAIL (HTTP ${r.status})`
+    const counts = r.success !== undefined
+      ? `${r.success} ok${r.failed ? `, <span style="color:#dc2626;font-weight:600;">${r.failed} failed</span>` : ''}`
+      : ''
+    const rowBg = (!r.ok || r.failed) ? '#fff5f5' : 'transparent'
+    return `
+      <tr style="background:${rowBg};border-bottom:1px solid #e2e5ea;">
+        <td style="padding:10px 12px;font-size:12px;font-family:monospace;color:#111826;">${r.path}</td>
+        <td style="padding:10px 12px;font-size:12px;font-weight:600;color:${statusColor};white-space:nowrap;">${statusText}</td>
+        <td style="padding:10px 12px;font-size:12px;color:#5C6478;">${counts}</td>
+      </tr>`
+  }).join('')
+
+  const html = wrapper(`
+    <p style="margin:0 0 4px;font-size:13px;font-weight:600;color:#dc2626;text-transform:uppercase;letter-spacing:0.05em;">
+      Cron failure alert
+    </p>
+    <h1 style="margin:0 0 16px;font-size:20px;font-weight:700;color:#111826;line-height:1.3;">
+      ${failures.length} endpoint${failures.length !== 1 ? 's' : ''} failed at ${String(hour).padStart(2, '0')}:00 UTC
+    </h1>
+    <p style="margin:0 0 16px;font-size:14px;color:#5C6478;">
+      ${httpErrors > 0 ? `${httpErrors} HTTP error${httpErrors !== 1 ? 's' : ''}. ` : ''}${totalFailed > 0 ? `${totalFailed} city/region${totalFailed !== 1 ? 's' : ''} failed to fetch.` : ''}
+    </p>
+    <table cellpadding="0" cellspacing="0" style="width:100%;border:1px solid #e2e5ea;border-radius:8px;overflow:hidden;margin-bottom:24px;">
+      <thead>
+        <tr style="background:#f4f5f7;border-bottom:1px solid #e2e5ea;">
+          <th style="padding:10px 12px;font-size:11px;font-weight:600;color:#8a909e;text-align:left;text-transform:uppercase;letter-spacing:0.05em;">Endpoint</th>
+          <th style="padding:10px 12px;font-size:11px;font-weight:600;color:#8a909e;text-align:left;text-transform:uppercase;letter-spacing:0.05em;">Status</th>
+          <th style="padding:10px 12px;font-size:11px;font-weight:600;color:#8a909e;text-align:left;text-transform:uppercase;letter-spacing:0.05em;">Result</th>
+        </tr>
+      </thead>
+      <tbody>${rows}</tbody>
+    </table>
+    <p style="margin:0;font-size:12px;color:#8a909e;">Sent automatically by WatchForMe cron monitoring.</p>
+  `)
+
+  await getResend().emails.send({ from: FROM, to: OWNER, subject, html })
+}

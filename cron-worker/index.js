@@ -6,14 +6,40 @@
 const APP_URL = 'https://watchforme.me'
 
 async function callEndpoint(env, path) {
-  const res = await fetch(`${APP_URL}${path}`, {
-    method: 'POST',
-    headers: {
-      'Authorization': `Bearer ${env.CRON_SECRET}`,
-      'Content-Type': 'application/json',
-    },
-  })
-  return { path, status: res.status, ok: res.ok }
+  try {
+    const res = await fetch(`${APP_URL}${path}`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${env.CRON_SECRET}`,
+        'Content-Type': 'application/json',
+      },
+    })
+    let data = {}
+    try { data = await res.json() } catch {}
+    return { path, status: res.status, ok: res.ok, ...data }
+  } catch (e) {
+    return { path, status: 0, ok: false, error: String(e) }
+  }
+}
+
+function hasFailures(results) {
+  return results.some(r => !r.ok || (r.failed !== undefined && r.failed > 0))
+}
+
+async function notifyIfFailed(env, hour, results) {
+  if (!hasFailures(results)) return
+  try {
+    await fetch(`${APP_URL}/api/cron/notify-failure`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${env.CRON_SECRET}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ hour, results }),
+    })
+  } catch (e) {
+    console.error(JSON.stringify({ event: 'notify_failure_error', error: String(e) }))
+  }
 }
 
 export default {
@@ -49,5 +75,6 @@ export default {
     }
 
     console.log(JSON.stringify({ event: 'cron_run', hour, results }))
+    await notifyIfFailed(env, hour, results)
   },
 }
