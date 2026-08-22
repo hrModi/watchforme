@@ -5,7 +5,7 @@ compatibility_date = "2024-09-23"
 [triggers]
 # 06:00 UTC = 11:30 IST (after India daily price revision)
 # 14:00 UTC = 09:00 ET (morning US prices)
-crons = ["0 6 * * *", "0 14 * * *"]
+crons = ["0 6 * * *", "0 7 * * *", "0 14 * * *"]
 
 # CRON_SECRET must be set as a Worker secret:
 # cd cron-worker && wrangler secret put CRON_SECRET
