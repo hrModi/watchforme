@@ -15,7 +15,7 @@ export const metadata: Metadata = {
 export default async function HomePage() {
   const [headersList, cookiesList] = await Promise.all([headers(), cookies()])
   const prefCountry = cookiesList.get('country_pref')?.value   // explicit user choice
-  const cfCountry = headersList.get('CF-IPCountry')            // IP-detected
+  const cfCountry = headersList.get('x-vercel-ip-country')     // IP-detected
   const isIndia = prefCountry === 'IN' || (!prefCountry && cfCountry === 'IN')
   const country = isIndia ? 'india' : 'us'
   const countryCode = isIndia ? 'IN' : 'US'
