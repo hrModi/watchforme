@@ -23,7 +23,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const priceStr = diesel ? `₹${diesel.value.toFixed(2)}/L — ` : ''
   return {
     title: { absolute: `Diesel Price in ${city.name} Today: ${priceStr}WatchForMe` },
-    description: `Today's diesel price in ${city.name} is ₹${diesel?.value?.toFixed(2) ?? 'N/A'}/litre. Check the 30-day trend and set a free price alert for ${city.name}, ${city.state}.`,
+    description: `Today's diesel price in ${city.name} is ₹${diesel?.value?.toFixed(2) ?? 'N/A'}/litre. Track the 30-day trend, compare with yesterday's rate, and get a free email alert when diesel crosses your target. No signup needed.`,
     alternates: { canonical: `/diesel-price/india/${city.slug}` },
   }
 }
@@ -59,6 +59,14 @@ export default async function DieselPricePage({ params }: Props) {
       return { name: c.name, slug: c.slug, href: `/diesel-price/india/${c.slug}`, price: p?.value ?? null, unit: '₹/L' }
     })
 
+  const sorted = [...history].sort((a, b) => new Date(a.fetched_at).getTime() - new Date(b.fetched_at).getTime())
+  const hFirst = sorted[0]
+  const hLast = sorted[sorted.length - 1]
+  const hasTrend = sorted.length >= 2 && hFirst.fetched_at !== hLast.fetched_at
+  const change30 = hasTrend ? hLast.value - hFirst.value : 0
+  const pct30 = hasTrend && hFirst.value > 0 ? Math.abs(change30 / hFirst.value * 100).toFixed(1) : '0.0'
+  const dir30 = change30 > 0 ? 'risen' : change30 < 0 ? 'fallen' : 'remained stable'
+
   const faqs: FAQ[] = [
     {
       q: `What is the diesel price in ${city.name} today?`,
@@ -76,6 +84,10 @@ export default async function DieselPricePage({ params }: Props) {
       q: `How can I get a diesel price alert for ${city.name}?`,
       a: `Use WatchForMe to set a free price alert. Enter your target price and email — you'll be notified the moment the diesel price in ${city.name} crosses your threshold. No app or account needed.`,
     },
+    ...(hasTrend ? [{
+      q: `How has the diesel price in ${city.name} changed over the past 30 days?`,
+      a: `Over the past 30 days, the diesel price in ${city.name} has ${dir30} by ₹${Math.abs(change30).toFixed(2)} (${pct30}%), from ₹${hFirst.value.toFixed(2)}/L to ₹${hLast.value.toFixed(2)}/L.`,
+    }] : []),
   ]
 
   const baseUrl = process.env.NEXT_PUBLIC_APP_URL ?? 'https://watchforme.me'
@@ -120,6 +132,7 @@ export default async function DieselPricePage({ params }: Props) {
         aboutHeading={`About Diesel Prices in ${city.name}`}
         aboutParagraphs={[
           `Diesel prices in ${city.name} are revised daily by oil marketing companies and reflect local ${city.state} VAT and state taxes in addition to central excise duty.`,
+          ...(hasTrend ? [`Over the past 30 days, diesel in ${city.name} has ${dir30} by ₹${Math.abs(change30).toFixed(2)} (${pct30}%), from ₹${hFirst.value.toFixed(2)}/L to ₹${hLast.value.toFixed(2)}/L.`] : []),
           `Use the alert form to get notified by email when the diesel price in ${city.name} crosses a level you set.`,
         ]}
         faqs={faqs}

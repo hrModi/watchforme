@@ -23,8 +23,19 @@ export default async function DieselPriceUSPage() {
   const stateRates = await getAllRegionRates('fuel', 'US', ['gasoline', 'diesel'])
   const ratesByRegion = new Map(stateRates.map(r => [r.region, r]))
 
+  const baseUrl = process.env.NEXT_PUBLIC_APP_URL ?? 'https://watchforme.me'
+  const breadcrumbSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Home', item: baseUrl },
+      { '@type': 'ListItem', position: 2, name: 'Diesel Prices by State', item: `${baseUrl}/diesel-price/us` },
+    ],
+  }
+
   return (
     <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} />
       <div
         className="px-4 sm:px-6 py-8"
         style={{ borderBottom: '1px solid var(--border)', backgroundColor: 'var(--surface)' }}
