@@ -45,6 +45,7 @@ export default async function SilverPriceCityPage({ params }: Props) {
 
   const tabs: Tab[] = [
     { subtype: 'gold_24k', label: '24K Gold', href: `/gold-price/india/${citySlug}` },
+    { subtype: 'gold_22k', label: '22K Gold', href: `/gold-price/india/${citySlug}/22k` },
     { subtype: 'silver',   label: 'Silver',   href: `/silver-price/india/${citySlug}` },
   ]
 
