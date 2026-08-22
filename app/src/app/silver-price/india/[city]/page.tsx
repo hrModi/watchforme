@@ -23,7 +23,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const priceStr = silver ? `₹${silver.value.toLocaleString('en-IN')}/kg, ` : ''
   return {
     title: { absolute: `Silver Price in ${city.name} Today: ${priceStr}WatchForMe` },
-    description: `Today's silver price in ${city.name} is ₹${silver?.value?.toLocaleString('en-IN') ?? 'N/A'} per kg. Check the 30-day trend and set a free price alert.`,
+    description: `Today's silver price in ${city.name} is ₹${silver?.value?.toLocaleString('en-IN') ?? 'N/A'} per kg. Track the 30-day trend, compare with yesterday's rate, and set a free email alert when silver crosses your target price. No signup needed.`,
     alternates: { canonical: `/silver-price/india/${city.slug}` },
   }
 }
@@ -121,6 +121,7 @@ export default async function SilverPriceCityPage({ params }: Props) {
           `Use the alert form above to get notified when ${city.name} silver prices cross a level you set.`,
         ]}
         faqs={faqs}
+        watcher_type="gold"
       />
       <div className="max-w-6xl mx-auto px-4 sm:px-6 pb-8">
         <AdSlot slot="C" />

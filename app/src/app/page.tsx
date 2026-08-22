@@ -8,8 +8,8 @@ import { WATCHERS } from '@/config/watchers'
 export const revalidate = 3600
 
 export const metadata: Metadata = {
-  title: 'watchforme.me | Free Price & Rate Watchers',
-  description: 'Free fuel price alerts, gold rate watchers, currency rate trackers and more. No signup, no account needed.',
+  title: 'WatchForMe | Free Price & Rate Watchers',
+  description: 'Free fuel price alerts, gold rate watchers, currency trackers and more. Get notified by email when prices cross your target. No signup, no account needed.',
 }
 
 export default async function HomePage() {

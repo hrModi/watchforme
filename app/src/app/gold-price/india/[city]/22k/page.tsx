@@ -23,7 +23,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const priceStr = rate ? `₹${rate.value.toLocaleString('en-IN')}/10g, ` : ''
   return {
     title: { absolute: `22K Gold Price in ${city.name} Today: ${priceStr}WatchForMe` },
-    description: `Today's 22K gold price in ${city.name} is ₹${rate?.value?.toLocaleString('en-IN') ?? 'N/A'} per 10 grams. Check the 30-day trend and set a free price alert.`,
+    description: `Today's 22K gold price in ${city.name} is ₹${rate?.value?.toLocaleString('en-IN') ?? 'N/A'} per 10 grams. 22K is the standard for gold jewellery in India. Track the 30-day trend and set a free email alert when it crosses your target. No signup needed.`,
     alternates: { canonical: `/gold-price/india/${city.slug}/22k` },
   }
 }
@@ -123,6 +123,7 @@ export default async function GoldPrice22KCityPage({ params }: Props) {
           `22K gold (91.7% purity) is the most common standard for gold jewellery in India. Use the alert form above to get notified when prices cross your target.`,
         ]}
         faqs={faqs}
+        watcher_type="gold"
       />
       <div className="max-w-6xl mx-auto px-4 sm:px-6 pb-8">
         <AdSlot slot="C" />

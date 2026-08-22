@@ -65,6 +65,7 @@ export default async function GoldPriceUSPage() {
           'The gold spot price shown is sourced from BullionVault, updated daily after the New York market opens. Prices are in USD per troy ounce.',
           'Use the alert form above to get notified when the gold price crosses a level you set.',
         ]}
+        watcher_type="gold"
       />
       <div className="max-w-6xl mx-auto px-4 sm:px-6 pb-8">
         <AdSlot slot="C" />

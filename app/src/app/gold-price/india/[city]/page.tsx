@@ -23,7 +23,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const priceStr = rate ? `₹${rate.value.toLocaleString('en-IN')}/10g, ` : ''
   return {
     title: { absolute: `24K Gold Price in ${city.name} Today: ${priceStr}WatchForMe` },
-    description: `Today's 24K gold price in ${city.name} is ₹${rate?.value?.toLocaleString('en-IN') ?? 'N/A'} per 10 grams. Check the 30-day trend and set a free price alert.`,
+    description: `Today's 24K gold price in ${city.name} is ₹${rate?.value?.toLocaleString('en-IN') ?? 'N/A'} per 10 grams. Track the 30-day trend, compare with yesterday's rate, and set a free email alert when gold crosses your target price. No signup needed.`,
     alternates: { canonical: `/gold-price/india/${city.slug}` },
   }
 }
@@ -125,6 +125,7 @@ export default async function GoldPriceCityPage({ params }: Props) {
           `Use the alert form above to get notified when ${city.name} gold prices cross a level you set.`,
         ]}
         faqs={faqs}
+        watcher_type="gold"
       />
       <div className="max-w-6xl mx-auto px-4 sm:px-6 pb-8">
         <AdSlot slot="C" />
