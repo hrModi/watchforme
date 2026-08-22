@@ -1,5 +1,4 @@
 import type { Metadata } from 'next'
-import Link from 'next/link'
 import { cache } from 'react'
 import CityFuelView, { type FuelData, type Tab } from '@/components/CityFuelView'
 import AdSlot from '@/components/AdSlot'
@@ -47,15 +46,6 @@ export default async function GoldPriceUSPage() {
   return (
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} />
-      <div
-        className="px-4 sm:px-6 py-3"
-        style={{ borderBottom: '1px solid var(--border)' }}
-      >
-        <div className="max-w-6xl mx-auto flex flex-wrap gap-2">
-          <span className="px-3 py-1.5 rounded-lg text-sm font-medium" style={{ backgroundColor: 'var(--accent)', color: '#fff', border: '1px solid var(--accent)' }}>Gold</span>
-          <Link href="/silver-price/us" className="px-3 py-1.5 rounded-lg text-sm font-medium" style={{ backgroundColor: 'var(--surface-2)', color: 'var(--text-muted)', border: '1px solid var(--border)' }}>Silver</Link>
-        </div>
-      </div>
       <AdSlot slot="A" />
       <CityFuelView
         activeFuel={activeFuel}
